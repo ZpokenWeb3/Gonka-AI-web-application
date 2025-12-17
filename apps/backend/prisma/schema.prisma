@@ -1,0 +1,461 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id String @id @default(uuid()) @db.Uuid
+
+  walletAddress String      @unique
+  walletChain   WalletChain
+  walletType    WalletType?
+
+  authNonce String?
+
+  depositAddress String @unique
+
+  displayName String?
+  avatarUrl   String?
+
+  isActive Boolean @default(true)
+
+  lastSeenAt DateTime?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  balances           Balance[]
+  deposits           Deposit[]
+  bridgeTransfers    BridgeTransfer[]
+  swaps              Swap[]
+  onRampTransactions OnRampTransaction[]
+  chatSessions       ChatSession[]
+  apiKeys            ApiKey[]
+  usageLogs          UsageLog[]
+  auditLogs          AuditLog[]
+
+  @@index([walletAddress])
+  @@index([depositAddress])
+  @@map("users")
+}
+
+model Balance {
+  id String @id @default(uuid()) @db.Uuid
+
+  userId String @db.Uuid
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  asset        Asset   @default(GNK)
+  amount       Decimal @default(0) @db.Decimal(20, 8)
+  lockedAmount Decimal @default(0) @db.Decimal(20, 8)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@unique([userId, asset])
+  @@index([userId])
+  @@map("balances")
+}
+
+model Deposit {
+  id String @id @default(uuid()) @db.Uuid
+
+  userId String @db.Uuid
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  txHash    String      @unique
+  fromChain WalletChain
+  asset     Asset       @default(GNK)
+  amount    Decimal     @db.Decimal(20, 8)
+
+  status DepositStatus
+
+  blockHeight   BigInt?
+  confirmations Int?
+
+  errorMessage String?
+
+  confirmedAt DateTime?
+
+  createdAt DateTime @default(now())
+
+  @@index([userId])
+  @@index([status])
+  @@index([txHash])
+  @@map("deposits")
+}
+
+model BridgeTransfer {
+  id String @id @default(uuid()) @db.Uuid
+
+  userId String @db.Uuid
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  fromChain WalletChain
+  toChain   WalletChain @default(GONKA)
+
+  fromTxHash String?
+  toTxHash   String?
+
+  amount    Decimal  @db.Decimal(20, 8)
+  bridgeFee Decimal? @db.Decimal(20, 8)
+
+  status         BridgeStatus
+  bridgeProvider String?
+
+  errorMessage String?
+
+  completedAt DateTime?
+
+  createdAt DateTime @default(now())
+
+  @@index([userId])
+  @@index([status])
+  @@map("bridge_transfers")
+}
+
+model Swap {
+  id String @id @default(uuid()) @db.Uuid
+
+  userId String @db.Uuid
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  fromToken  String
+  toToken    String
+  fromAmount Decimal  @db.Decimal(20, 8)
+  toAmount   Decimal? @db.Decimal(20, 8)
+
+  chain       String
+  dexProvider String?
+  txHash      String?
+
+  status   SwapStatus
+  slippage Decimal?   @db.Decimal(5, 2)
+
+  completedAt DateTime?
+
+  createdAt DateTime @default(now())
+
+  @@index([userId])
+  @@map("swaps")
+}
+
+model OnRampTransaction {
+  id String @id @default(uuid()) @db.Uuid
+
+  userId String @db.Uuid
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  provider     String
+  providerTxId String @unique
+
+  fiatAmount   Decimal @db.Decimal(10, 2)
+  fiatCurrency String  @default("USD")
+
+  cryptoAmount   Decimal? @db.Decimal(20, 8)
+  cryptoCurrency String   @default("USDC")
+
+  destinationAddress String
+
+  status      OnRampStatus
+  webhookData Json?
+
+  completedAt DateTime?
+
+  createdAt DateTime @default(now())
+
+  @@index([userId])
+  @@index([providerTxId])
+  @@map("onramp_transactions")
+}
+
+model ChatSession {
+  id String @id @default(uuid()) @db.Uuid
+
+  userId String @db.Uuid
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  title        String  @default("New Chat")
+  model        String
+  systemPrompt String?
+
+  temperature Decimal? @default(0.7) @db.Decimal(3, 2)
+  maxTokens   Int?     @default(4096)
+
+  isPinned   Boolean @default(false)
+  isArchived Boolean @default(false)
+
+  lastMessageAt DateTime?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  messages Message[]
+  UsageLog UsageLog[]
+
+  @@index([userId])
+  @@index([updatedAt(sort: Desc)])
+  @@map("chat_sessions")
+}
+
+model Message {
+  id String @id @default(uuid()) @db.Uuid
+
+  sessionId String      @db.Uuid
+  session   ChatSession @relation(fields: [sessionId], references: [id], onDelete: Cascade)
+
+  role MessageRole
+
+  contentEncrypted Bytes
+  nonce            Bytes
+  contentHash      String?
+
+  promptTokens     Int?
+  completionTokens Int?
+  totalTokens      Int?
+
+  costGnk   Decimal? @db.Decimal(12, 8)
+  latencyMs Int?
+
+  model        String?
+  finishReason String?
+
+  createdAt DateTime @default(now())
+
+  attachments MessageAttachment[]
+  usageLogs   UsageLog[]
+
+  @@index([sessionId, createdAt])
+  @@map("messages")
+}
+
+model MessageAttachment {
+  id String @id @default(uuid()) @db.Uuid
+
+  messageId String  @db.Uuid
+  message   Message @relation(fields: [messageId], references: [id], onDelete: Cascade)
+
+  type AttachmentType
+
+  filename   String?
+  url        String?
+  mimeType   String?
+  sizeBytes  Int?
+  storageKey String?
+
+  createdAt DateTime @default(now())
+
+  @@index([messageId])
+  @@map("message_attachments")
+}
+
+model ApiKey {
+  id String @id @default(uuid()) @db.Uuid
+
+  userId String @db.Uuid
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  name      String
+  keyPrefix String
+  keyHash   String @unique
+
+  rateLimitPerMinute Int?     @default(60)
+  rateLimitPerDay    Int?     @default(10000)
+  monthlySpendLimit  Decimal? @db.Decimal(20, 8)
+
+  allowedModels String[]
+  allowedIps    String[]
+
+  isActive Boolean @default(true)
+
+  lastUsedAt DateTime?
+  expiresAt  DateTime?
+  revokedAt  DateTime?
+
+  createdAt DateTime @default(now())
+
+  usageLogs UsageLog[]
+
+  @@index([userId])
+  @@index([keyHash])
+  @@map("api_keys")
+}
+
+model UsageLog {
+  id String @id @default(uuid()) @db.Uuid
+
+  userId String @db.Uuid
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  apiKeyId String? @db.Uuid
+  apiKey   ApiKey? @relation(fields: [apiKeyId], references: [id], onDelete: SetNull)
+
+  sessionId String?      @db.Uuid
+  session   ChatSession? @relation(fields: [sessionId], references: [id], onDelete: SetNull)
+
+  messageId String?  @db.Uuid
+  message   Message? @relation(fields: [messageId], references: [id], onDelete: SetNull)
+
+  model String
+
+  promptTokens     Int
+  completionTokens Int
+  totalTokens      Int
+
+  costGnk   Decimal @db.Decimal(12, 8)
+  latencyMs Int?
+
+  status       UsageStatus?
+  errorMessage String?
+
+  ipAddress String? @db.Inet
+
+  createdAt DateTime @default(now())
+
+  @@index([userId, createdAt(sort: Desc)])
+  @@index([apiKeyId, createdAt(sort: Desc)])
+  @@map("usage_logs")
+}
+
+model ModelConfig {
+  id String @id @default(uuid()) @db.Uuid
+
+  modelName   String @unique
+  displayName String
+  provider    String @default("gonka")
+
+  contextWindow   Int
+  maxOutputTokens Int
+
+  pricePer1kInput  Decimal @db.Decimal(12, 8)
+  pricePer1kOutput Decimal @db.Decimal(12, 8)
+
+  isActive Boolean @default(true)
+
+  capabilities String[]
+  metadata     Json?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@map("model_config")
+}
+
+model SystemConfig {
+  key String @id
+
+  value       Json
+  description String?
+
+  updatedAt DateTime @updatedAt
+
+  @@map("system_config")
+}
+
+model AuditLog {
+  id String @id @default(uuid()) @db.Uuid
+
+  userId String @db.Uuid
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  action     String
+  entityType String
+  entityId   String? @db.Uuid
+
+  metadata  Json?
+  ipAddress String? @db.Inet
+
+  createdAt DateTime @default(now())
+
+  @@index([userId, createdAt(sort: Desc)])
+  @@index([createdAt(sort: Desc)])
+  @@map("audit_log")
+}
+
+enum WalletChain {
+  ETHEREUM
+  SOLANA
+  COSMOS
+  GONKA
+
+  @@map("wallet_chain")
+}
+
+enum WalletType {
+  METAMASK
+  PHANTOM
+  RABBY
+  TRUSTWALLET
+  COINBASEWALLET
+
+  @@map("wallet_type")
+}
+
+enum Asset {
+  GNK
+
+  @@map("assets")
+}
+
+enum DepositStatus {
+  PENDING
+  CONFIRMED
+  FAILED
+
+  @@map("deposit_status")
+}
+
+enum BridgeStatus {
+  INITIATED
+  BRIDGING
+  COMPLETED
+  FAILED
+
+  @@map("bridge_status")
+}
+
+enum SwapStatus {
+  PENDING
+  COMPLETED
+  FAILED
+
+  @@map("swap_status")
+}
+
+enum OnRampStatus {
+  PENDING
+  PROCESSING
+  COMPLETED
+  FAILED
+  REFUNDED
+
+  @@map("onramp_status")
+}
+
+enum MessageRole {
+  SYSTEM
+  USER
+  ASSISTANT
+
+  @@map("message_role")
+}
+
+enum AttachmentType {
+  FILE
+  URL
+  IMAGE
+
+  @@map("attachment_type")
+}
+
+enum UsageStatus {
+  SUCCESS
+  ERROR
+  TIMEOUT
+
+  @@map("usage_status")
+}
