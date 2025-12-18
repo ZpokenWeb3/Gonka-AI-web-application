@@ -28,7 +28,7 @@ const verifyRequestSchema = z.object({
 
 const JWT_SECRET = process.env.JWT_SECRET || "dev-jwt-secret-change-me";
 
-router.post("/auth/nonce", (req, res) => {
+router.post("/nonce", (req, res) => {
   const parseResult = nonceRequestSchema.safeParse(req.body);
   if (!parseResult.success) {
     return res.status(400).json({
@@ -45,7 +45,7 @@ router.post("/auth/nonce", (req, res) => {
   return res.json({ nonce });
 });
 
-router.post("/auth/verify", async (req, res) => {
+router.post("/verify", async (req, res) => {
   const parseResult = verifyRequestSchema.safeParse(req.body);
   if (!parseResult.success) {
     return res.status(400).json({
@@ -69,17 +69,14 @@ router.post("/auth/verify", async (req, res) => {
       return res.status(401).json({ error: "Signature does not match address" });
     }
 
-    // Нонc одноразовый — сразу удаляем
     nonces.delete(normalizedAddress);
 
-    // Найти или создать пользователя в БД по адресу кошелька
     const user = await prisma.user.upsert({
       where: { walletAddress: normalizedAddress },
       update: { lastSeenAt: new Date() },
       create: {
         walletAddress: normalizedAddress,
         walletChain: WalletChain.ETHEREUM,
-        // временный технический адрес депозита, пока не подключён реальный депозитный механизм
         depositAddress: normalizedAddress,
         isActive: true,
         lastSeenAt: new Date(),

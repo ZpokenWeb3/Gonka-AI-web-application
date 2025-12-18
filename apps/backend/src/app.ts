@@ -10,7 +10,6 @@ export const createApp = (): Application => {
   app.use(cors());
   app.use(express.json());
 
-  // Все API-роуты, сейчас /auth/*
   app.use(routes);
 
   return app;
