@@ -12,8 +12,5 @@ export const config = getDefaultConfig({
     appName: "My RainbowKit App",
     projectId: "f0248126e0f85f7e80132287496a8c89",
     chains: [mainnet, polygon, optimism, arbitrum, base, sepolia],
-    // Отключаем SSR для WalletConnect/wagmi, чтобы избежать ReferenceError: indexedDB is not defined
-    // в Node-среде (Next.js серверный рендеринг).
-    // На клиенте поведение коннекторов остаётся корректным.
     ssr: false,
 });

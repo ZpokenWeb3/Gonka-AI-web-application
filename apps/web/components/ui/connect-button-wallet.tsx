@@ -22,9 +22,9 @@ export const ConnectButtonWallet = () => {
                   flex items-center cursor-pointer gap-2
                   px-4 py-2
                   rounded-xl
-                  bg-[#090211]
-                  text-sm text-[#6a1bbf] font-medium
-                  border border-[#6a1bbf]
+                  bg-[#131316]
+                  text-sm text-[#c9c9c9] font-medium
+                  border border-[#232328]
                   hover:bg-[#0f0719]
                   transition-colors duration-200
                 "
@@ -43,9 +43,9 @@ export const ConnectButtonWallet = () => {
                 flex items-center cursor-pointer gap-2
                 px-4 py-2
                 rounded-xl
-                bg-[#090211]
-                text-sm text-[#6a1bbf] font-medium
-                border border-[#6a1bbf]
+                bg-[#131316]
+                text-sm text-[#c9c9c9] font-medium
+                border border-[#232328]
                 hover:bg-[#0f0719]
                 transition-colors duration-200
                 disabled:opacity-50 disabled:cursor-not-allowed

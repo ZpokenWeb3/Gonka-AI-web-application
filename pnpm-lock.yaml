@@ -41,6 +41,9 @@ importers:
       express:
         specifier: ^5.2.1
         version: 5.2.1
+      gonka-openai:
+        specifier: ^0.2.2
+        version: 0.2.2(openai@4.104.0(ws@8.18.3(bufferutil@4.0.9)(utf-8-validate@5.0.10))(zod@4.2.1))
       helmet:
         specifier: ^8.1.0
         version: 8.1.0
@@ -8135,6 +8138,14 @@ snapshots:
       openai: 4.104.0(ws@8.18.0(bufferutil@4.0.9)(utf-8-validate@5.0.10))(zod@4.2.1)
       secp256k1: 5.0.1
 
+  gonka-openai@0.2.2(openai@4.104.0(ws@8.18.3(bufferutil@4.0.9)(utf-8-validate@5.0.10))(zod@4.2.1)):
+    dependencies:
+      '@cosmjs/amino': 0.32.4
+      '@cosmjs/crypto': 0.32.4
+      dotenv: 16.6.1
+      openai: 4.104.0(ws@8.18.3(bufferutil@4.0.9)(utf-8-validate@5.0.10))(zod@4.2.1)
+      secp256k1: 5.0.1
+
   gopd@1.2.0: {}
 
   graceful-fs@4.2.11: {}
@@ -8804,6 +8815,21 @@ snapshots:
       node-fetch: 2.7.0
     optionalDependencies:
       ws: 8.18.0(bufferutil@4.0.9)(utf-8-validate@5.0.10)
+      zod: 4.2.1
+    transitivePeerDependencies:
+      - encoding
+
+  openai@4.104.0(ws@8.18.3(bufferutil@4.0.9)(utf-8-validate@5.0.10))(zod@4.2.1):
+    dependencies:
+      '@types/node': 18.19.130
+      '@types/node-fetch': 2.6.13
+      abort-controller: 3.0.0
+      agentkeepalive: 4.6.0
+      form-data-encoder: 1.7.2
+      formdata-node: 4.4.1
+      node-fetch: 2.7.0
+    optionalDependencies:
+      ws: 8.18.3(bufferutil@4.0.9)(utf-8-validate@5.0.10)
       zod: 4.2.1
     transitivePeerDependencies:
       - encoding

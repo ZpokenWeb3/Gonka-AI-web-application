@@ -3,16 +3,23 @@
 import { Send } from "lucide-react";
 import { useState } from "react";
 import {useChatStore} from "../../store/useChatStore";
-
+import { sendGonkaChatMessage } from "../../lib/gonkaClient";
 
 export const Input = () => {
     const [value, setValue] = useState("");
     const sendMessage = useChatStore((s) => s.sendMessage);
 
-    const send = () => {
+    const send = async () => {
         if (!value.trim()) return;
-        sendMessage(value);
+        const text = value;
+        sendMessage(text);
         setValue("");
+
+        try {
+            await sendGonkaChatMessage(text);
+        } catch (err) {
+            console.error("Failed to send Gonka chat message", err);
+        }
     };
 
     return (
@@ -22,11 +29,11 @@ export const Input = () => {
                 className="w-full text-sm text-white outline-none bg-transparent"
                 value={value}
                 onChange={(e) => setValue(e.target.value)}
-                onKeyDown={(e) => e.key === "Enter" && send()}
+                onKeyDown={(e) => e.key === "Enter" && void send()}
             />
 
             <button
-                onClick={send}
+                onClick={() => void send()}
                 disabled={!value.trim()}
                 className="flex items-center justify-center cursor-pointer w-10 h-10 rounded-[8px] bg-[#6a1bbf] disabled:opacity-50 transition-all duration-300"
             >

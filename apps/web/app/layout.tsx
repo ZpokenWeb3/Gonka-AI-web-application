@@ -4,6 +4,7 @@ import "@rainbow-me/rainbowkit/styles.css";
 import { Providers } from "./providers";
 import { Poppins } from "next/font/google";
 import {Header} from "../components/header";
+import {Navbar} from "../components/navbar/navbar";
 
 const poppins = Poppins({
   subsets: ["latin"],
@@ -24,8 +25,8 @@ export default function RootLayout({
       <html lang="en">
       <body className={`${poppins.className} antialiased`}>
       <Providers>
-        <div className="flex flex-col w-full h-screen">
-            <Header/>
+        <div className="flex w-full h-screen">
+            <Navbar/>
           {children}
         </div>
       </Providers>

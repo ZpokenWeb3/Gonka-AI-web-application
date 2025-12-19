@@ -66,7 +66,7 @@ export async function getNonce(address: string): Promise<GetNonceResponse> {
 
   try {
     const { data } = await apiClient.post<GetNonceResponse>("/auth/nonce", {
-      address: address.toLowerCase(), // Normalize address
+      address: address.toLowerCase(),
     });
 
     if (!data?.nonce) {
@@ -127,7 +127,6 @@ export function setAuthTokenCookie(token: string): boolean {
       "Path=/",
       `Max-Age=${AUTH_COOKIE_MAX_AGE_SECONDS}`,
       "SameSite=Lax",
-      // Add Secure flag in production
       process.env.NODE_ENV === "production" ? "Secure" : "",
     ]
         .filter(Boolean)
@@ -174,4 +173,6 @@ export function clearAuthTokenCookie(): boolean {
 export function isValidEthereumAddress(address: string): boolean {
   return /^0x[a-fA-F0-9]{40}$/.test(address);
 }
+
+
 

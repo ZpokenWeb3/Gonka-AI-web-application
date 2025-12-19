@@ -12,16 +12,16 @@ const nonces = new Map<string, string>();
 
 const nonceRequestSchema = z.object({
   address: z
-    .string()
-    .min(1)
-    .regex(/^0x[a-fA-F0-9]{40}$/, "Invalid wallet address"),
+      .string()
+      .min(1)
+      .regex(/^0x[a-fA-F0-9]{40}$/, "Invalid wallet address"),
 });
 
 const verifyRequestSchema = z.object({
   address: z
-    .string()
-    .min(1)
-    .regex(/^0x[a-fA-F0-9]{40}$/, "Invalid wallet address"),
+      .string()
+      .min(1)
+      .regex(/^0x[a-fA-F0-9]{40}$/, "Invalid wallet address"),
   nonce: z.string().min(1),
   signature: z.string().min(1),
 });
@@ -84,13 +84,13 @@ router.post("/verify", async (req, res) => {
     });
 
     const token = jwt.sign(
-      {
-        sub: user.id,
-        userId: user.id,
-        walletAddress: normalizedAddress,
-      },
-      JWT_SECRET,
-      { expiresIn: "1h" },
+        {
+          sub: user.id,
+          userId: user.id,
+          walletAddress: normalizedAddress,
+        },
+        JWT_SECRET,
+        { expiresIn: "1h" },
     );
 
     return res.json({ token });
@@ -101,4 +101,3 @@ router.post("/verify", async (req, res) => {
 });
 
 export default router;
-
