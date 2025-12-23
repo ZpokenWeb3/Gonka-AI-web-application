@@ -1,23 +1,31 @@
+'use client'
+
 import {Button} from "../ui/button";
 import {CircleQuestionMark, KeyRound, Plus} from "lucide-react";
 import {ChatList} from "./chat-list";
 import {Logo} from "../ui/logo";
+import { useChatStore } from "../../store/useChatStore";
+import Link from "next/link";
 
 ;
 
 export const Navbar = () => {
+    const setActiveChat = useChatStore((state) => state.setActiveChat);
+
     return (
         <div className="md:flex hidden flex-col w-[320px] bg-[#0f0f0f] border-r border-[#232330]">
-            <div className="flex items-center gap-3 px-4 pt-4 pb-2">
-                <Logo/>
-                <div className="flex flex-col">
-                    <h2 className="text-xl text-[#E0E4EB] font-semibold">GONka</h2>
-                    <p className="text-xs text-[#a7a7b8]">
-                        Decentralized AI access</p>
+            <Link href="/">
+                <div className="flex items-center gap-3 px-4 pt-4 pb-2">
+                    <Logo/>
+                    <div className="flex flex-col">
+                        <h2 className="text-xl text-[#E0E4EB] font-semibold">GONka</h2>
+                        <p className="text-xs text-[#a7a7b8]">
+                            Decentralized AI access</p>
+                    </div>
                 </div>
-            </div>
+            </Link>
             <div className="flex flex-col gap-5 p-4">
-                <Button variant="secondary">
+                <Button onClick={() => setActiveChat(true)} variant="secondary">
                     <Plus width={15} height={15} color="#ffffff"/>
                     New Chat
                 </Button>

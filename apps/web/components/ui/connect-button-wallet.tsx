@@ -25,7 +25,7 @@ export const ConnectButtonWallet = () => {
                   bg-[#131316]
                   text-sm text-[#c9c9c9] font-medium
                   border border-[#232328]
-                  hover:bg-[#0f0719]
+                  hover:bg-[#232328]
                   transition-colors duration-200
                 "
                   >
@@ -46,7 +46,7 @@ export const ConnectButtonWallet = () => {
                 bg-[#131316]
                 text-sm text-[#c9c9c9] font-medium
                 border border-[#232328]
-                hover:bg-[#0f0719]
+                hover:bg-[#232328]
                 transition-colors duration-200
                 disabled:opacity-50 disabled:cursor-not-allowed
               "

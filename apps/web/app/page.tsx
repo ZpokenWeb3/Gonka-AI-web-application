@@ -1,16 +1,24 @@
+'use client'
+
 import {ChatWrapper} from "../components/chat/chat-wrapper";
-import {BottomSection} from "../components/chat/bottom-section";
 import {Header} from "../components/header";
 import {Main} from "../components/chat/main";
+import { useChatStore } from "../store/useChatStore";
 
 
 export default function Home() {
+  const isActive = useChatStore((state) => state.isActive);
+
   return (
-      <div className={`flex flex-col w-full h-screen`}>
-          <Header/>
-          <ChatWrapper/>
-          {/*<Main/>*/}
-          <BottomSection/>
+      <div className={`flex flex-col items-center w-full h-screen`}>
+          
+          {isActive ? (
+            <ChatWrapper/>
+          ) : (
+            <Main/>
+          )}
+          
+          
       </div>
   );
 }

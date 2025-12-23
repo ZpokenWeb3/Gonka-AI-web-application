@@ -10,7 +10,9 @@ export const getNonce = async (req: Request, res: Response) => {
     }
 
     const nonce = await AuthService.generateNonce(walletAddress);
+
     return res.json({ nonce });
+    
   } catch (err) {
     console.error("Failed to generate nonce", err);
     return res.status(500).json({ error: "Failed to generate nonce" });

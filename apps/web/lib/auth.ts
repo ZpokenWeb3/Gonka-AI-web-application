@@ -4,7 +4,7 @@ const API_BASE_URL =
     process.env.NEXT_PUBLIC_API_BASE_URL ?? "http://localhost:5000";
 
 export const AUTH_COOKIE_NAME = "gonka_token";
-export const AUTH_COOKIE_MAX_AGE_SECONDS = 60 * 60 * 24 * 7; // 7 days
+export const AUTH_COOKIE_MAX_AGE_SECONDS = 60 * 60 * 24 * 7; 
 
 
 export type GetNonceResponse = {

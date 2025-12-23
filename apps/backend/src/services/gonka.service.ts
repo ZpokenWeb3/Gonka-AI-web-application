@@ -3,10 +3,10 @@ import { resolveEndpoints, GonkaOpenAI } from 'gonka-openai';
 const GONKA_SOURCE_URL = process.env.GONKA_SOURCE_URL!;
 const GONKA_PRIVATE_KEY = process.env.GONKA_PRIVATE_KEY!;
 
-let clientPromise: Promise<GonkaOpenAI> | null = null;
+let clientPromise: Promise<any> | null = null;
 let endpointsPromise: Promise<any> | null = null;
 
-async function getClient(): Promise<GonkaOpenAI> {
+async function getClient(): Promise<any> {
   if (!clientPromise) {
     clientPromise = (async () => {
       if (!endpointsPromise) {
@@ -29,7 +29,7 @@ async function getClient(): Promise<GonkaOpenAI> {
 
 export async function gonkaChat(
     message: string,
-    model = 'Qwen/Qwen3-235B-A22B-Instruct-2507-FP8'
+    model = 'Qwen/QwQ-32B'
 ) {
   const client = await getClient();
 

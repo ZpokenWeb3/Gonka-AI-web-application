@@ -9,6 +9,8 @@ export const Input = () => {
     const [value, setValue] = useState("");
     const sendMessage = useChatStore((s) => s.sendMessage);
 
+    const addAssistantMessage = useChatStore((s) => s.addAssistantMessage);
+
     const send = async () => {
         if (!value.trim()) return;
         const text = value;
@@ -16,14 +18,21 @@ export const Input = () => {
         setValue("");
 
         try {
-            await sendGonkaChatMessage(text);
+            const data = await sendGonkaChatMessage(text);
+            const content = data.choices?.[0]?.message?.content;
+            if (content) {
+                addAssistantMessage(content);
+            } else {
+                addAssistantMessage("[Нет ответа от AI]");
+            }
         } catch (err) {
             console.error("Failed to send Gonka chat message", err);
+            addAssistantMessage("[Ошибка при получении ответа от AI]");
         }
     };
 
     return (
-        <div className="flex items-center justify-between w-[90%] bg-[#17111c] border border-[#21232C] focus-within:border-[#6a1bbf] py-2 px-3 rounded-[12px]">
+        <div className="flex items-center justify-between w-[90%] bg-[#17111c] border border-[#21232C] focus-within:border-[#6B26D9] py-2 px-3 rounded-[12px]">
             <input
                 placeholder="Enter your message"
                 className="w-full text-sm text-white outline-none bg-transparent"
@@ -35,7 +44,7 @@ export const Input = () => {
             <button
                 onClick={() => void send()}
                 disabled={!value.trim()}
-                className="flex items-center justify-center cursor-pointer w-10 h-10 rounded-[8px] bg-[#6a1bbf] disabled:opacity-50 transition-all duration-300"
+                className="flex items-center justify-center cursor-pointer w-10 h-10 rounded-[8px] bg-[#6B26D9] disabled:opacity-50 transition-all duration-300"
             >
                 <Send width={15} height={15} color="#fff" />
             </button>

@@ -8,13 +8,16 @@ export type Message = {
 
 type ChatStore = {
     messages: Message[];
+    isActive: boolean; 
     sendMessage: (text: string) => void;
     addAssistantMessage: (text: string) => void;
     clear: () => void;
+    setActiveChat: (active: boolean) => void; 
 };
 
 export const useChatStore = create<ChatStore>((set) => ({
     messages: [],
+    isActive: false, 
 
     sendMessage: (text) =>
         set((state) => ({
@@ -41,4 +44,6 @@ export const useChatStore = create<ChatStore>((set) => ({
         })),
 
     clear: () => set({ messages: [] }),
+
+    setActiveChat: (active) => set({ isActive: active }), 
 }));

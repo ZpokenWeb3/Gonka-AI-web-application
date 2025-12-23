@@ -11,6 +11,8 @@
     "check-types": "next typegen && tsc --noEmit"
   },
   "dependencies": {
+    "@base-org/account": "^2.5.1",
+    "@coinbase/cdp-sdk": "^1.40.1",
     "@radix-ui/react-slot": "^1.2.4",
     "@rainbow-me/rainbowkit": "^2.2.10",
     "@repo/ui": "workspace:*",
@@ -18,6 +20,7 @@
     "axios": "^1.13.2",
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
+    "framer-motion": "^12.23.26",
     "gonka-openai": "^0.2.2",
     "lucide-react": "^0.561.0",
     "next": "16.0.10",

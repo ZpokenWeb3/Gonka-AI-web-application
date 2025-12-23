@@ -1,16 +1,45 @@
 import {
-    mainnet,
-    polygon,
-    optimism,
-    arbitrum,
-    base,
-    sepolia,
+  mainnet,
+  polygon,
+  optimism,
+  arbitrum,
+  sepolia,
 } from "wagmi/chains";
-import {getDefaultConfig} from "@rainbow-me/rainbowkit";
 
-export const config = getDefaultConfig({
-    appName: "My RainbowKit App",
-    projectId: "f0248126e0f85f7e80132287496a8c89",
-    chains: [mainnet, polygon, optimism, arbitrum, base, sepolia],
-    ssr: false,
+import { createConfig, http } from "wagmi";
+
+import {
+  metaMaskWallet,
+  walletConnectWallet,
+  coinbaseWallet,
+} from "@rainbow-me/rainbowkit/wallets";
+
+import { connectorsForWallets } from "@rainbow-me/rainbowkit";
+
+export const config = createConfig({
+  chains: [mainnet, polygon, optimism, arbitrum, sepolia],
+  transports: {
+    [mainnet.id]: http(),
+    [polygon.id]: http(),
+    [optimism.id]: http(),
+    [arbitrum.id]: http(),
+    [sepolia.id]: http(),
+  },
+  connectors: connectorsForWallets(
+    [
+      {
+        groupName: "Wallets",
+        wallets: [
+          metaMaskWallet,
+          walletConnectWallet,
+          coinbaseWallet,
+        ],
+      },
+    ],
+    {
+      appName: "My RainbowKit App",
+      projectId: "f0248126e0f85f7e80132287496a8c89",
+    }
+  ),
+  ssr: false,
 });
