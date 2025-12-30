@@ -2,9 +2,12 @@
 
 import {  Check, ChevronUp } from "lucide-react"
 import { useState } from "react"
+import { useAuth } from "../../hooks/useAuth"
 
 export const GettingStarted = () => {
     const [isOpen, setOpen] = useState(true)
+    const { isAuthenticating } = useAuth();
+
     return (
         <div className="absolute right-[25px] bottom-[25px] flex flex-col gap-5 w-[280px] text-[14px] text-white cursor-pointer transition-all duration-200 bg-[#09090B] border border-[#232328] p-2 rounded-[15px]">
             <div onClick={() => setOpen(!isOpen)} className="flex items-center justify-between">
@@ -30,7 +33,7 @@ export const GettingStarted = () => {
                                         flex items-center justify-center
                                         peer-checked:bg-[#6B26D9]
                                         transition-colors duration-200">
-                            <Check width={10} height={10}/>
+                            {/* <Check width={10} height={10}/> */}
                         </span>
                         <span>{label}</span>
                         </label>

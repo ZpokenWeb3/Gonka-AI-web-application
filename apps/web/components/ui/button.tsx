@@ -10,7 +10,7 @@ const buttonVariants = cva(
   {
     variants: {
       variant: {
-        default: "flex items-center justify-center cursor-pointer gap-2 text-xs text-[#3F434D] border border-[#3F434D] rounded-md px-3 py-2",
+        default: "flex items-center justify-center cursor-pointer gap-2 text-xs hover:bg-[#18181c] duration-200 transition-all text-[#3F434D] border border-[#3F434D] rounded-md px-3 py-2",
         destructive:
           "bg-destructive text-white hover:bg-destructive/90 focus-visible:ring-destructive/20 dark:focus-visible:ring-destructive/40 dark:bg-destructive/60",
         outline:

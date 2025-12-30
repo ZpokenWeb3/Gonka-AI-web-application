@@ -10,7 +10,7 @@ export default function Home() {
   const isActive = useChatStore((state) => state.isActive);
 
   return (
-      <div className={`flex flex-col items-center w-full h-screen`}>
+      <div className={`flex flex-col items-center w-full h-full`}>
           
           {isActive ? (
             <ChatWrapper/>

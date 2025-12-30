@@ -4,7 +4,6 @@ import "@rainbow-me/rainbowkit/styles.css";
 import { Providers } from "./providers";
 import { Poppins } from "next/font/google";
 import {Navbar} from "../components/navbar/navbar";
-import { GettingStarted } from "../components/ui/getting-started";
 import { Header } from "../components/header";
 import Transition from "../components/ui/transition";
 
@@ -19,25 +18,25 @@ export const metadata: Metadata = {
 };
 
 export default function RootLayout({
-                                     children,
-                                   }: Readonly<{
+  children,
+}: Readonly<{
   children: React.ReactNode;
 }>) {
   return (
-      <html lang="en">
+    <html lang="en">
       <body className={`${poppins.className} antialiased`}>
-      <Providers>
-        <Transition>
-          <div className="flex relative w-full h-screen">
+        <Providers>
+          <div className="flex relative w-full h-screen overflow-hidden">
             <Navbar/>
-            <div className="flex flex-col w-full">
+            <div className="flex flex-col w-full h-screen overflow-hidden">
               <Header/>
-              {children}
+              <Transition>
+                {children}
+              </Transition>
             </div>
           </div>
-        </Transition>
-      </Providers>
+        </Providers>
       </body>
-      </html>
+    </html>
   );
 }

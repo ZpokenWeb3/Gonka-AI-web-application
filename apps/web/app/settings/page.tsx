@@ -1,6 +1,7 @@
 import { Settings } from "lucide-react";
 import { SettingsSection } from "../../components/settings/settings-section";
 import { ABOUT_DATA, CHATSETTINGS_DATA, NOTIFICATIONS_DATA } from "../../types/contstants";
+import { SectionTitle } from "../../components/ui/section-title";
 
 export default function SettingsPage() {
   return (
@@ -11,18 +12,18 @@ export default function SettingsPage() {
         </div>
         <div className="flex flex-wrap gap-7">
             <div className="flex flex-col gap-3">
-                <h5 className="text-[18px] text-[#707070]">Chat Settings</h5>
+                <SectionTitle text="Chat Settings"/>
                 <SettingsSection data={CHATSETTINGS_DATA}/>
             </div>
             <div className="flex flex-col gap-3">
-                <h5 className="text-[18px] text-[#707070]">Notifications</h5>
+                <SectionTitle text="Notifications"/>
                 <SettingsSection data={NOTIFICATIONS_DATA}/>
             </div>
             <div className="flex flex-col gap-3">
-                <h5 className="text-[18px] text-[#707070]">About</h5>
+                <SectionTitle text="About"/>
                 <SettingsSection data={ABOUT_DATA}/>
             </div>
         </div>
-      </div>
+    </div>
   );
 }

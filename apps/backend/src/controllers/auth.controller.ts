@@ -3,13 +3,13 @@ import * as AuthService from "../services/auth.service";
 
 export const getNonce = async (req: Request, res: Response) => {
   try {
-    const { walletAddress } = req.body;
+    const { address } = req.body;
 
-    if (!walletAddress || typeof walletAddress !== "string") {
-      return res.status(400).json({ error: "walletAddress is required" });
+    if (!address || typeof address !== "string") {
+      return res.status(400).json({ error: "address is required" });
     }
 
-    const nonce = await AuthService.generateNonce(walletAddress);
+    const nonce = await AuthService.generateNonce(address);
 
     return res.json({ nonce });
     
@@ -21,17 +21,21 @@ export const getNonce = async (req: Request, res: Response) => {
 
 export const verifySignature = async (req: Request, res: Response) => {
   try {
-    const { walletAddress, signature } = req.body;
+    const { address, signature, nonce } = req.body;
 
-    if (!walletAddress || typeof walletAddress !== "string") {
-      return res.status(400).json({ error: "walletAddress is required" });
+    if (!address || typeof address !== "string") {
+      return res.status(400).json({ error: "address is required" });
     }
 
     if (!signature || typeof signature !== "string") {
       return res.status(400).json({ error: "signature is required" });
     }
 
-    const token = await AuthService.verify(walletAddress, signature);
+    if (!nonce || typeof nonce !== "string") {
+      return res.status(400).json({ error: "nonce is required" });
+    }
+
+    const token = await AuthService.verify(address, signature, nonce);
     return res.json({ token });
   } catch (err) {
     console.error("Failed to verify wallet signature", err);

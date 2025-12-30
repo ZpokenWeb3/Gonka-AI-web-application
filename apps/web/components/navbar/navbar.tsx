@@ -10,7 +10,7 @@ import Link from "next/link";
 ;
 
 export const Navbar = () => {
-    const setActiveChat = useChatStore((state) => state.setActiveChat);
+    const { createChat } = useChatStore();
 
     return (
         <div className="md:flex hidden flex-col w-[320px] bg-[#0f0f0f] border-r border-[#232330]">
@@ -25,7 +25,7 @@ export const Navbar = () => {
                 </div>
             </Link>
             <div className="flex flex-col gap-5 p-4">
-                <Button onClick={() => setActiveChat(true)} variant="secondary">
+                <Button onClick={() => createChat()} variant="secondary">
                     <Plus width={15} height={15} color="#ffffff"/>
                     New Chat
                 </Button>
@@ -33,10 +33,12 @@ export const Navbar = () => {
             <ChatList/>
             <div className="flex flex-col gap-3">
                 <div className="flex px-2 gap-3">
-                    <Button variant="default" className="w-[55%]">
-                        <KeyRound width={16} height={16} color="#3F434D"/>
-                        Developer API
-                    </Button>
+                    <Link className="w-[55%]" href="/developer-api">
+                        <Button variant="default">
+                            <KeyRound width={16} height={16} color="#3F434D"/>
+                            Developer API
+                        </Button>
+                    </Link>
                     <Button variant="default" className="w-[40%]">
                         <CircleQuestionMark width={16} height={16} color="#3F434D"/>
                         Help

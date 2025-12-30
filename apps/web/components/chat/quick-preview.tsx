@@ -19,8 +19,8 @@ const AIDATA = [
 
 export const QuickPreview = () => {
     return (
-        <div className="flex flex-col gap-4 bg-[#151518] border border-[#232328] p-4 rounded-[25px]">
-            <h4 className="text-[22px] font-semibold text-white">Quick Preview</h4>
+        <div className="flex flex-col 2xl:gap-4 gap-3 bg-[#151518] border border-[#232328] 2xl:p-4 p-3 2xl:rounded-[25px] rounded-[18px]">
+            <h4 className="2xl:text-[22px] text-[21px] font-semibold text-white">Quick Preview</h4>
             <div className="flex items-center gap-2">
                 {AIDATA.map((item, index) => (
                     <AiType key={index} logo={item.logo} title={item.title}/>
@@ -30,7 +30,7 @@ export const QuickPreview = () => {
                 <Message isUser={false}/>
                 <Message isUser={true}/>
             </div>
-            <p className="text-[15px] cursor-pointer text-[#8A8A93]">Tip: Press to search chats</p>
+            <p className="2xl:text-[15px] text-[13px] cursor-pointer text-[#8A8A93]">Tip: Press to search chats</p>
         </div>
     )
 }

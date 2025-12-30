@@ -4,6 +4,14 @@ import { prisma } from "../config/database";
 import { signToken } from "../utils/jwt";
 
 export const generateNonce = async (walletAddress: string) => {
+    const existingUser = await prisma.user.findUnique({
+        where: { walletAddress: walletAddress.toLowerCase() },
+    });
+
+    if (existingUser?.authNonce) {
+        return existingUser.authNonce;
+    }
+
     const nonce = `Sign this message to login: ${crypto.randomUUID()}`;
 
     await prisma.user.upsert({
@@ -20,21 +28,40 @@ export const generateNonce = async (walletAddress: string) => {
     return nonce;
 }
 
-export const verify = async (walletAddress: string, signature: string) => {
+export const verify = async (walletAddress: string, signature: string, nonce: string) => {
+    console.log("=== VERIFY DEBUG ===");
+    console.log("Input walletAddress:", walletAddress);
+    console.log("Input nonce:", nonce);
+    console.log("Input signature:", signature);
+    
     const user = await prisma.user.findUnique({
         where: { walletAddress: walletAddress.toLowerCase() },
     });
 
     if (!user?.authNonce) {
+        console.log("ERROR: No user or authNonce found");
         throw new Error("Invalid auth");
     }
 
+    console.log("Stored authNonce:", user.authNonce);
+
+    if (user.authNonce !== nonce) {
+        console.log("ERROR: Nonce mismatch");
+        console.log("Expected:", user.authNonce);
+        console.log("Received:", nonce);
+        throw new Error("Invalid nonce");
+    }
+
     const recovered = ethers.verifyMessage(
-        user.authNonce,
+        nonce,
         signature,
     );
 
+    console.log("Recovered address:", recovered);
+    console.log("Expected address:", walletAddress);
+
     if (recovered.toLowerCase() !== walletAddress.toLowerCase()) {
+        console.log("ERROR: Address mismatch");
         throw new Error("Invalid signature");
     }
 

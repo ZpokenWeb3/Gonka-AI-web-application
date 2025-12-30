@@ -9,12 +9,12 @@ export const Main = () => {
 
     return (
         <div className="flex p-7 gap-5 h-full">
-            <div className="flex flex-col gap-7 w-[700px] h-fit bg-[#151518] border border-[#232328] p-7 rounded-[25px]">
+            <div className="flex flex-col 2xl:gap-7 gap-5 2xl:w-[700px] w-[500px] h-fit bg-[#151518] border border-[#232328] p-7 2xl:rounded-[25px] rounded-[18px]">
                 <div className="text-[#6B26D9] text-[15px] w-fit border border-[#6B26D9] font-medium py-1.5 px-3 rounded-full">Welcome to Gonka AI</div>
                 <div className="flex flex-col gap-2">
-                    <h2 className="text-[44px] leading-[44px] w-[500px] text-white font-bold">Access powerful AI models through the decentralized
+                    <h2 className="2xl:text-[44px] text-[32px] 2xl:leading-[44px] leading-[34px] 2xl:w-[500px] w-[380px] text-white font-bold">Access powerful AI models through the decentralized
                         Gonka network.</h2>
-                    <p className="text-[15px] leading-5 w-[500px] text-[#8A8A93]">No email. Pay only for what you use. Chats encrypted. Built for builders and humans.</p>
+                    <p className="2xl:text-[15px] text-[14px] leading-5 2xl:w-[500px] w-[380px] text-[#8A8A93]">No email. Pay only for what you use. Chats encrypted. Built for builders and humans.</p>
                 </div>
                 <div className="flex flex-wrap w-[430px] gap-3">
                     <Button className="w-fit" variant="outline">No password needed</Button>
@@ -28,7 +28,7 @@ export const Main = () => {
                 </div>
                 <p className="text-[13px] cursor-pointer underline text-[#8A8A93]">What's a wallet</p>
             </div>
-            <div className="flex flex-col w-[500px] gap-5">
+            <div className="flex flex-col 2xl:w-[500px] w-[420px] 2xl:gap-5 gap-3.5">
                 <QuickPreview/>
                 <Checklist/>
             </div>

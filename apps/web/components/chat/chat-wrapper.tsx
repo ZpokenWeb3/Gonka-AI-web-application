@@ -45,13 +45,13 @@ export const ChatWrapper = () => {
     const showAssistantPlaceholder = lastMessage?.role === "user"
 
     return (
-        <div className="flex flex-col w-full h-screen">
+        <div className="flex flex-col w-full flex-1">
             <div
                 ref={containerRef}
-                className="chat-scroll flex-1 overflow-y-auto p-6 space-y-4"
+                className="chat-scroll overflow-y-auto p-6 flex-1 space-y-4"
             >
                 {messages.length === 0 ? (
-                    <div className="flex flex-col items-center gap-2 p-10 flex-1">
+                    <div className="flex flex-col items-center gap-2 p-10">
                         <Logo size={80} />
                         <h3 className="text-[35px] text-[#E0E4EB] font-semibold">
                             GONka

@@ -20,20 +20,22 @@ export type UseAuthReturn = {
     retry: () => void;
 };
 
+const getInitialAuthState = (): AuthState => {
+    return hasAuthTokenCookie() ? "authenticated" : "idle";
+};
+
+const getInitialHasAttempted = (): boolean => {
+    return hasAuthTokenCookie();
+};
+
 export function useAuth(): UseAuthReturn {
     const { signMessageAsync } = useSignMessage();
     const { address, isConnected } = useAccount();
     const { disconnect } = useDisconnect();
 
-    const [authState, setAuthState] = useState<AuthState>("idle");
+    const [authState, setAuthState] = useState<AuthState>(getInitialAuthState);
     const [authError, setAuthError] = useState<string | null>(null);
-    const [hasAttempted, setHasAttempted] = useState(false);
-
-    useEffect(() => {
-        if (hasAuthTokenCookie()) {
-            setAuthState("authenticated");
-        }
-    }, []);
+    const [hasAttempted, setHasAttempted] = useState<boolean>(getInitialHasAttempted);
 
     const authenticate = useCallback(
         async (walletAddress: string) => {
@@ -119,6 +121,7 @@ export function useAuth(): UseAuthReturn {
         }
     }, [isConnected, address, authState, hasAttempted, authenticate]);
 
+
     useEffect(() => {
         if (!isConnected) {
             setHasAttempted(false);
@@ -136,7 +139,6 @@ export function useAuth(): UseAuthReturn {
         setHasAttempted(false);
         disconnect();
     }, [disconnect]);
-
 
     const retry = useCallback(() => {
         if (address) {

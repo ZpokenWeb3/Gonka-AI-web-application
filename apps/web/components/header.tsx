@@ -1,10 +1,30 @@
+'use client'
+
 import {ConnectButtonWallet} from "./ui/connect-button-wallet";
 import {Button} from "./ui/button";
 import {Search, Settings, Wallet} from "lucide-react";
 import Link from "next/link";
+import { useAccount, useReadContract } from "wagmi";
+import { erc20Abi, formatUnits } from "viem";
 
 
 export const Header = () => {
+    const { address, isConnected } = useAccount();
+
+    const { data: balance } = useReadContract({
+    abi: erc20Abi,
+    address: "0xA86EFf7284e059A06C7F8D0346Ac5570C72BeEa5",
+    functionName: 'balanceOf',
+    args: address ? [address] : undefined,
+    query: {
+      enabled: Boolean(address),
+    },
+  })
+
+  const formattedBalance = balance
+    ? Number(formatUnits(balance, 18)).toFixed(2)
+    : '0.00'
+
     return (
         <div className="flex items-center justify-between w-full border-b border-[#232330] p-4">
             <div
@@ -18,7 +38,7 @@ export const Header = () => {
             <div className="flex gap-2">
                 <Button className="w-fit h-10" variant="outline">
                     <Wallet width={30} height={30}/>
-                    Balance: 100.00 GNK
+                    Balance: ${formattedBalance} GNK
                 </Button>
                 <ConnectButtonWallet/>
                 <Link href="/settings">
