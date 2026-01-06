@@ -1,5 +1,14 @@
 import { Request, Response } from "express";
 import * as AuthService from "../services/auth.service";
+import * as UserService from "../services/user.service";
+
+declare global {
+  namespace Express {
+    interface Request {
+      userId?: string;
+    }
+  }
+}
 
 export const getNonce = async (req: Request, res: Response) => {
   try {
@@ -41,4 +50,53 @@ export const verifySignature = async (req: Request, res: Response) => {
     console.error("Failed to verify wallet signature", err);
     return res.status(400).json({ error: "Invalid signature" });
   }
-}
+};
+
+export const getMe = async (req: Request, res: Response) => {
+  try {
+    const userId = req.userId;
+
+    if (!userId) {
+      return res.status(401).json({ error: "Unauthorized" });
+    }
+
+    const user = await UserService.getCurrentUser(userId);
+
+    return res.json({
+      success: true,
+      data: user,
+    });
+  } catch (err) {
+    console.error("Failed to get current user", err);
+    
+    if (err instanceof Error && err.message === "User not found") {
+      return res.status(404).json({ error: "User not found" });
+    }
+    
+    return res.status(500).json({ error: "Failed to get user information" });
+  }
+};
+
+export const updateProfile = async (req: Request, res: Response) => {
+  try {
+    const userId = req.userId;
+    const { displayName, avatarUrl } = req.body;
+
+    if (!userId) {
+      return res.status(401).json({ error: "Unauthorized" });
+    }
+
+    const user = await UserService.updateUserProfile(userId, {
+      displayName,
+      avatarUrl,
+    });
+
+    return res.json({
+      success: true,
+      data: user,
+    });
+  } catch (err) {
+    console.error("Failed to update profile", err);
+    return res.status(500).json({ error: "Failed to update profile" });
+  }
+};

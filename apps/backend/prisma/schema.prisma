@@ -21,6 +21,13 @@ model User {
   displayName String?
   avatarUrl   String?
 
+  defaultModel ChatModel @default(CHATGPT4)
+  temperaure Float @default(0.7)
+  systemPrompt String?
+
+  lowBalanceAlert Boolean @default(false)
+  depositNotifications Boolean @default(false)
+
   isActive Boolean @default(true)
 
   lastSeenAt DateTime?
@@ -383,6 +390,13 @@ enum WalletChain {
   GONKA
 
   @@map("wallet_chain")
+}
+
+enum ChatModel{
+  CHATGPT4
+  CLAUDE
+
+  @@map("chat_model")
 }
 
 enum WalletType {

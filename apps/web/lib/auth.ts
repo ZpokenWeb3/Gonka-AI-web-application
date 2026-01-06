@@ -11,6 +11,14 @@ export type GetNonceResponse = {
   nonce: string;
 };
 
+export type GetMeResponse = {
+  id: string;
+  defaultModel: string,
+  temperaure: number,
+  lowBalanceAlert: boolean,
+  depositNotifications: boolean
+};
+
 export type VerifyWalletResponse = {
   token: string;
 };
@@ -56,6 +64,39 @@ function extractErrorMessage(error: unknown, fallback: string): string {
   if (error instanceof Error) return error.message || fallback;
 
   return fallback;
+}
+
+export async function getMe(): Promise<GetMeResponse> {
+  try{
+    const {data} = await apiClient.get<{success: boolean; data: GetMeResponse}>("/auth/me");
+    
+    if (!data.success || !data.data) {
+      throw new Error("Invalid response structure");
+    }
+    
+    return data.data;
+  } catch(error){
+    const message = extractErrorMessage(error, "Failed to get user information");
+    throw new Error(message);
+  }
+}
+
+export async function updateProfile(data: {
+  displayName?: string;
+  avatarUrl?: string;
+}): Promise<GetMeResponse> {
+  try {
+    const { data: response } = await apiClient.put<{success: boolean; data: GetMeResponse}>("/auth/profile", data);
+    
+    if (!response.success || !response.data) {
+      throw new Error("Invalid response structure");
+    }
+    
+    return response.data;
+  } catch(error) {
+    const message = extractErrorMessage(error, "Failed to update profile");
+    throw new Error(message);
+  }
 }
 
 
@@ -109,6 +150,7 @@ export async function verifyWallet(params: {
     throw new Error(message);
   }
 }
+
 
 export function setAuthTokenCookie(token: string): boolean {
   if (typeof document === "undefined") {

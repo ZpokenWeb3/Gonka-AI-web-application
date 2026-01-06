@@ -1,44 +1,44 @@
-import { Bot, Thermometer, StickyNote, Info, FileText, Laptop, Lock, BanknoteArrowUp, PiggyBank } from "lucide-react";
+import { Bot, Thermometer, StickyNote, Info, FileText, Laptop, Lock, BanknoteArrowUp, PiggyBank, User, Wallet } from "lucide-react";
 import React from "react";
 
 export const HEADER_HEIGHT = 77;
 
-export const CHATSETTINGS_DATA = [
-    {
-        logo: <Bot color="#ffffff"/>,
-        title: 'Model',
-        text: 'Model used for new conversations',
-        version: 'GPT-4'
-    },
-    {
-        logo: <Thermometer color="#ffffff"/>,
-        title: 'Temperature',
-        text: 'Response creativity level',
-        version: '0.7'
-    },
-    {
-        logo: <StickyNote color="#ffffff"/>,
-        title: 'System Prompt',
-        text: 'Custom instructions for AI',
-        version: 'Not set'
-    }
+export const CHATSETTINGS_DATA = (userData: any) => [
+  {
+    logo: <Bot color="#ffffff" />,
+    title: 'Model',
+    text: 'Model used for new conversations',
+    version: userData?.defaultModel || 'Not set'
+  },
+  {
+    logo: <Thermometer color="#ffffff" />,
+    title: 'Temperature',
+    text: 'Response creativity level',
+    version: userData?.temperaure?.toString() || 'Not set'
+  },
+  {
+    logo: <StickyNote color="#ffffff" />,
+    title: 'System Prompt',
+    text: 'Custom instructions for AI',
+    version: userData?.systemPrompt || 'Not set'
+  }
+];
 
-]
-
-export const NOTIFICATIONS_DATA = [
+export const NOTIFICATIONS_DATA = (userData: any) => [
     {
-        logo: <PiggyBank color="#ffffff"/>,
+        logo: <PiggyBank color="#ffffff" />,
         title: 'Low Balance Alert',
         text: 'When balance falls below 5 GNK',
-        switcher: true
+        switcher: userData?.lowBalanceAlert || false
     },
     {
-        logo: <BanknoteArrowUp color="#ffffff"/>,
+        logo: <BanknoteArrowUp color="#ffffff" />,
         title: 'Deposit Notifications',
         text: 'When funds are received',
-        switcher: true
+        switcher: userData?.depositNotifications || false
     },
-]
+];
+
 
 export const ABOUT_DATA = [
     {
@@ -59,4 +59,31 @@ export const ABOUT_DATA = [
         title: 'Open Source',
     },
 
+]
+
+export const getProfileData = (user?: any) => [
+    {
+        logo: <User color="#ffffff"/>,
+        title: 'Display Name',
+        text: 'Your public display name',
+        version: user?.displayName || 'Not set'
+    },
+    {
+        logo: <Wallet color="#ffffff"/>,
+        title: 'Wallet Address',
+        text: 'Your connected wallet',
+        version: user?.walletAddress ? `${user.walletAddress.slice(0, 6)}...${user.walletAddress.slice(-4)}` : 'Not connected'
+    },
+    {
+        logo: <Wallet color="#ffffff"/>,
+        title: 'Chat Sessions',
+        text: 'Total number of chats',
+        version: user?._count?.chatSessions?.toString() || '0'
+    },
+    {
+        logo: <Wallet color="#ffffff"/>,
+        title: 'API Keys',
+        text: 'Active API keys',
+        version: user?._count?.apiKeys?.toString() || '0'
+    }
 ]

@@ -1,5 +1,6 @@
 import { ChatSession, PrismaClient } from "@prisma/client"
 import { Decimal } from "@prisma/client/runtime/library";
+import { getMessagesBySessionId } from "./message.service";
 
 const prisma = new PrismaClient();
 
@@ -60,20 +61,25 @@ export const getUserChats = async (userId: string): Promise<ChatSession[]> => {
 }
 
 export const getChatById = async (chatId: string, userId: string): Promise<ChatSession | null> => {
-    return prisma.chatSession.findFirst({
+    const chat = await prisma.chatSession.findFirst({
         where: {
             id: chatId,
             userId
-        },
-        include: {
-            messages: {
-                orderBy: {createdAt: 'desc'},
-                include: {
-                    attachments: true
-                }
-            }
         }
-    })
+    });
+
+    if (!chat) return null;
+
+    // Получаем расшифрованные сообщения
+    const messages = await getMessagesBySessionId(chatId);
+
+    return {
+        ...chat,
+        messages: messages.map(msg => ({
+            ...msg,
+            attachments: [] // Заглушка для attachments
+        }))
+    } as any;
 }  
 
 export const deleteChatById = async (chatId: string, userId: string) => {

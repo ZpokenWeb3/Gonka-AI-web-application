@@ -9,7 +9,7 @@ interface Props {
     title: string
     text?: string
     version?: string
-    switcher?: ReactNode
+    switcher?: boolean
 }
 
 export const SettingsBlock: FC<Props> = ({
@@ -33,7 +33,7 @@ export const SettingsBlock: FC<Props> = ({
                 </div>
             </div>
 
-            {switcher ? (
+            {switcher !== undefined ? (
                 <Switcher 
                     checked={enabled}
                     onChange={() => setEnabled(prev => !prev)}/>

@@ -1,5 +1,6 @@
 import { Request, Response } from "express";
 import { createChat as createChatService, deleteChatById, getChatById, getUserChats } from "../services/chat.service";
+import { sendMessageAndGetResponse } from "../services/message.service";
 import { success } from "zod";
 
 declare global {
@@ -119,6 +120,47 @@ export const deleteChat = async(req: Request, res: Response) => {
             message: "Failed to delete chat",
             error: err instanceof Error ? err.message : 'Unknown error'
         })
+    }
+}
+
+export const sendMessage = async (req: Request, res: Response) => {
+    try {
+        const userId = req.userId!;
+        const { id: sessionId } = req.params;
+        const { message, model } = req.body;
+
+        if (!sessionId || !message) {
+            return res.status(400).json({
+                success: false,
+                message: "Session ID and message are required",
+            });
+        }
+
+        if (typeof message !== "string") {
+            return res.status(400).json({
+                success: false,
+                message: "Message must be a string",
+            });
+        }
+
+        const result = await sendMessageAndGetResponse({
+            sessionId,
+            userMessage: message,
+            model,
+        });
+
+        return res.json({
+            success: true,
+            data: result,
+        });
+
+    } catch (error) {
+        console.error("Failed to send message:", error);
+        return res.status(500).json({
+            success: false,
+            message: "Failed to send message",
+            error: error instanceof Error ? error.message : "Unknown error",
+        });
     }
 }
 
