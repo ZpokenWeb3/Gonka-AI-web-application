@@ -1,23 +1,31 @@
-import { Check } from "lucide-react"
+import { Check } from "lucide-react";
+import { useAccount } from "wagmi";
+import { ChecklistItem } from "./checklist-item";
 
 export const Checklist = () => {
-    return (
-        <div className="flex flex-col gap-3 bg-[#151518] border border-[#232328] 2xl:p-4 p-3 2xl:rounded-[25px] rounded-[18px]">
-            <h4 className="2xl:text-[22px] text-[21px] font-semibold text-white">Onboarding checklist</h4>
-            <div className="flex flex-col transition-all duration-200 2xl:text-[14px] text-[13px] text-white space-y-2">
-                {["Connect Wallet", "Add funds", "Send first message", "Try another model"].map((label) => (
-                    <label key={label} className="flex items-center gap-2 cursor-pointer">
-                    <input type="checkbox" className="hidden peer" />
-                    <span className="w-4 h-4 rounded-full border-2 border-[#6B26D9] flex-shrink-0
-                                    flex items-center justify-center
-                                    peer-checked:bg-[#6B26D9]
-                                    transition-colors duration-200">
-                        <Check width={10} height={10}/>
-                    </span>
-                    <span>{label}</span>
-                    </label>
-                ))}
-            </div>
-        </div>
-    )
-}
+  const { address, isConnected } = useAccount();
+
+  console.log(isConnected)
+
+  const walletConnected = isConnected;
+  const hasFunds = false; 
+  const sentFirstMessage = false; 
+  const triedAnotherModel = false;
+
+
+
+  return (
+    <div className="flex flex-col gap-3 bg-[#151518] border border-[#232328] 2xl:p-4 p-3 2xl:rounded-[25px] rounded-[18px]">
+      <h4 className="2xl:text-[22px] text-[21px] font-semibold text-white">
+        Onboarding checklist
+      </h4>
+
+      <div className="flex flex-col space-y-2 2xl:text-[14px] text-[13px]">
+        <ChecklistItem active={walletConnected} label="Connect Wallet" />
+        <ChecklistItem active={hasFunds} label="Add funds" />
+        <ChecklistItem active={sentFirstMessage} label="Send first message" />
+        <ChecklistItem active={triedAnotherModel} label="Try another model" />
+      </div>
+    </div>
+  );
+};

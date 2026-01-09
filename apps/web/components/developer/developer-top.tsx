@@ -1,7 +1,20 @@
+'use client'
+
 import { KeyRound, Plus } from "lucide-react"
 import { Button } from "../ui/button"
+import { useState } from "react"
+import { Modal } from "../ui/modal";
+import { CreationKeyForm } from "./creation-key-form";
 
-export const DeveloperTop = () => {
+interface Props {
+    onCreateKey: (name: string) => Promise<{ fullKey: string }>;
+}
+
+export const DeveloperTop = ({ onCreateKey }: Props) => {
+    const [open, setOpen] = useState(false);
+
+    const handleClose = () => setOpen(false);
+
     return (
         <div className="flex items-center justify-between">
             <div className="flex flex-col">
@@ -11,10 +24,14 @@ export const DeveloperTop = () => {
                 </div>
                 <p className="text-[16px] text-[#707070]">Integrate Gonka AI into your applications</p>
             </div>
-            <Button className="w-[200px]" variant="secondary">
+            <Button onClick={() => setOpen(true)} className="w-[200px]" variant="secondary">
                 <Plus width={15} height={15} color="#ffffff"/>
                  Create API Key
             </Button>
+
+            {open && (
+                <Modal form={ <CreationKeyForm onClose={handleClose} onCreateKey={onCreateKey} /> }/>
+            )}
         </div>
     )
 }

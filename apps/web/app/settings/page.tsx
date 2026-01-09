@@ -5,9 +5,26 @@ import { SettingsSection } from "../../components/settings/settings-section";
 import { ABOUT_DATA, CHATSETTINGS_DATA, NOTIFICATIONS_DATA } from "../../types/contstants";
 import { SectionTitle } from "../../components/ui/section-title";
 import { useProfile } from "../../hooks/useProfile";
+import { SettingsSkeleton } from "../../components/ui/skeleton";
 
 export default function SettingsPage() {
-    const { user, loading } = useProfile();
+    const { user, loading, updateUserProfile } = useProfile();
+
+    const handleLowBalanceChange = async (enabled: boolean) => {
+        try {
+            await updateUserProfile({ lowBalanceAlert: enabled });
+        } catch (error) {
+            console.error('Failed to update low balance alert:', error);
+        }
+    };
+
+    const handleDepositNotificationChange = async (enabled: boolean) => {
+        try {
+            await updateUserProfile({ depositNotifications: enabled });
+        } catch (error) {
+            console.error('Failed to update deposit notifications:', error);
+        }
+    };
 
   return (
       <div className={`flex flex-col gap-15 p-10 w-full h-screen`}>
@@ -20,15 +37,15 @@ export default function SettingsPage() {
         <div className="flex flex-wrap gap-7">
             <div className="flex flex-col gap-3">
                 <SectionTitle text="Chat Settings"/>
-                <SettingsSection data={CHATSETTINGS_DATA(user)}/>
+                {loading ? <SettingsSkeleton /> : <SettingsSection data={CHATSETTINGS_DATA(user)}/>}
             </div>
             <div className="flex flex-col gap-3">
                 <SectionTitle text="Notifications"/>
-                <SettingsSection data={NOTIFICATIONS_DATA(user)}/>
+                {loading ? <SettingsSkeleton /> : <SettingsSection data={NOTIFICATIONS_DATA(user, handleLowBalanceChange, handleDepositNotificationChange)}/>}
             </div>
             <div className="flex flex-col gap-3">
                 <SectionTitle text="About"/>
-                <SettingsSection data={ABOUT_DATA}/>
+                {loading ? <SettingsSkeleton /> : <SettingsSection data={ABOUT_DATA}/>}
             </div>
         </div>
     </div>

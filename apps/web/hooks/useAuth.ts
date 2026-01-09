@@ -6,6 +6,7 @@ import {
     setAuthTokenCookie,
     hasAuthTokenCookie,
     clearAuthTokenCookie,
+    clearModelCookie,
 } from "../lib/auth";
 
 type AuthState = "idle" | "authenticating" | "authenticated" | "error";
@@ -129,6 +130,7 @@ export function useAuth(): UseAuthReturn {
                 setAuthState("idle");
                 setAuthError(null);
             }
+            clearModelCookie();
         }
     }, [isConnected, authState]);
 

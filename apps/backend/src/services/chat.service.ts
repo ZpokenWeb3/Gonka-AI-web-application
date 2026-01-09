@@ -70,14 +70,13 @@ export const getChatById = async (chatId: string, userId: string): Promise<ChatS
 
     if (!chat) return null;
 
-    // Получаем расшифрованные сообщения
     const messages = await getMessagesBySessionId(chatId);
 
     return {
         ...chat,
         messages: messages.map(msg => ({
             ...msg,
-            attachments: [] // Заглушка для attachments
+            attachments: []
         }))
     } as any;
 }  

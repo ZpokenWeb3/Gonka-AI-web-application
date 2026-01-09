@@ -4,6 +4,7 @@ const API_BASE_URL =
     process.env.NEXT_PUBLIC_API_BASE_URL ?? "http://localhost:5000";
 
 export const AUTH_COOKIE_NAME = "gonka_token";
+export const MODEL_COOKIE_NAME = "gonka_model";
 export const AUTH_COOKIE_MAX_AGE_SECONDS = 60 * 60 * 24 * 7; 
 
 
@@ -84,6 +85,9 @@ export async function getMe(): Promise<GetMeResponse> {
 export async function updateProfile(data: {
   displayName?: string;
   avatarUrl?: string;
+  lowBalanceAlert?: boolean;
+  depositNotifications?: boolean;
+  defaultModel?: "QWEN25" | "QWEN323" | "QWEN332" | "QWENQWQ" | "REDHAT";
 }): Promise<GetMeResponse> {
   try {
     const { data: response } = await apiClient.put<{success: boolean; data: GetMeResponse}>("/auth/profile", data);
@@ -208,6 +212,66 @@ export function clearAuthTokenCookie(): boolean {
     return true;
   } catch (error) {
     console.error("Failed to clear auth cookie:", error);
+    return false;
+  }
+}
+
+export function setModelCookie(model: "QWEN25" | "QWEN323" | "QWEN332" | "QWENQWQ" | "REDHAT"): boolean {
+  if (typeof document === "undefined") {
+    console.warn("setModelCookie called in non-browser environment");
+    return false;
+  }
+
+  if (!model || typeof model !== "string") {
+    console.error("Invalid model provided");
+    return false;
+  }
+
+  try {
+    const cookieString = [
+      `${MODEL_COOKIE_NAME}=${model}`,
+      "Path=/",
+      `Max-Age=${AUTH_COOKIE_MAX_AGE_SECONDS}`,
+      "SameSite=Lax",
+      process.env.NODE_ENV === "production" ? "Secure" : "",
+    ]
+        .filter(Boolean)
+        .join("; ");
+
+    document.cookie = cookieString;
+    return true;
+  } catch (error) {
+    console.error("Failed to set model cookie:", error);
+    return false;
+  }
+}
+
+export function getModelCookie(): string | null {
+  if (typeof document === "undefined") return null;
+
+  const cookies = document.cookie.split("; ");
+  const modelCookie = cookies.find((row) =>
+      row.startsWith(`${MODEL_COOKIE_NAME}=`)
+  );
+
+  if (!modelCookie) return null;
+
+  const model = modelCookie.split("=")[1];
+  return model || null;
+}
+
+export function hasModelCookie(): boolean {
+  return getModelCookie() !== null;
+}
+
+export function clearModelCookie(): boolean {
+  if (typeof document === "undefined") return false;
+
+  try {
+    document.cookie = `${MODEL_COOKIE_NAME}=; Path=/; Max-Age=0; SameSite=Lax`;
+    return true;
+  } catch (error) {
+    console.error("Failed to clear model cookie:", error);
     return false;
   }
 }

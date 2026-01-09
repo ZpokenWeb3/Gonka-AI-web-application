@@ -1,4 +1,5 @@
 import { prisma } from "../config/database";
+import { ChatModel } from "@prisma/client";
 
 export const getCurrentUser = async (userId: string) => {
   const user = await prisma.user.findUnique({
@@ -9,7 +10,6 @@ export const getCurrentUser = async (userId: string) => {
       temperaure: true,
       lowBalanceAlert: true,
       depositNotifications: true
-
     },
   });
 
@@ -25,13 +25,25 @@ export const updateUserProfile = async (
   data: {
     displayName?: string;
     avatarUrl?: string;
+    lowBalanceAlert?: boolean;
+    depositNotifications?: boolean;
+    defaultModel?: ChatModel
   }
 ) => {
+  const updateData = {
+    ...data,
+    defaultModel: data.defaultModel ? data.defaultModel as ChatModel : undefined
+  };
+
   const user = await prisma.user.update({
     where: { id: userId },
-    data,
+    data: updateData,
     select: {
       id: true,
+      defaultModel: true,
+      temperaure: true,
+      lowBalanceAlert: true,
+      depositNotifications: true,
       walletAddress: true,
       displayName: true,
       avatarUrl: true,
@@ -41,3 +53,4 @@ export const updateUserProfile = async (
 
   return user;
 };
+

@@ -24,21 +24,24 @@ export const CHATSETTINGS_DATA = (userData: any) => [
   }
 ];
 
-export const NOTIFICATIONS_DATA = (userData: any) => [
+export const NOTIFICATIONS_DATA = (userData: any, onLowBalanceChange?: (enabled: boolean) => void, onDepositNotificationChange?: (enabled: boolean) => void) => [
     {
         logo: <PiggyBank color="#ffffff" />,
         title: 'Low Balance Alert',
         text: 'When balance falls below 5 GNK',
-        switcher: userData?.lowBalanceAlert || false
+        switcher: userData?.lowBalanceAlert || false,
+        initialSwitchState: userData?.lowBalanceAlert || false,
+        onSwitchChange: onLowBalanceChange
     },
     {
         logo: <BanknoteArrowUp color="#ffffff" />,
         title: 'Deposit Notifications',
         text: 'When funds are received',
-        switcher: userData?.depositNotifications || false
+        switcher: userData?.depositNotifications || false,
+        initialSwitchState: userData?.depositNotifications || false,
+        onSwitchChange: onDepositNotificationChange
     },
 ];
-
 
 export const ABOUT_DATA = [
     {

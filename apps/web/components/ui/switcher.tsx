@@ -2,13 +2,13 @@ import { FC } from "react"
 
 interface SwitcherProps {
     checked: boolean
-    onChange: () => void
+    onChange: (checked: boolean) => void
 }
 
 export const Switcher: FC<SwitcherProps> = ({ checked, onChange }) => {
     return (
         <button
-            onClick={onChange}
+            onClick={() => onChange(!checked)}
             className={`relative w-[44px] h-[24px] cursor-pointer rounded-full transition-colors duration-300
                 ${checked ? "bg-[#6B26D9]" : "bg-[#2A2A2E]"}`}
         >

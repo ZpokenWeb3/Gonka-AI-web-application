@@ -1,6 +1,7 @@
 import { Request, Response } from "express";
-import * as AuthService from "../services/auth.service";
-import * as UserService from "../services/user.service";
+import { generateNonce, verify } from "../services/auth.service";
+import { getCurrentUser, updateUserProfile } from "../services/user.service";
+
 
 declare global {
   namespace Express {
@@ -18,7 +19,7 @@ export const getNonce = async (req: Request, res: Response) => {
       return res.status(400).json({ error: "address is required" });
     }
 
-    const nonce = await AuthService.generateNonce(address);
+    const nonce = await generateNonce(address);
 
     return res.json({ nonce });
     
@@ -44,7 +45,7 @@ export const verifySignature = async (req: Request, res: Response) => {
       return res.status(400).json({ error: "nonce is required" });
     }
 
-    const token = await AuthService.verify(address, signature, nonce);
+    const token = await verify(address, signature, nonce);
     return res.json({ token });
   } catch (err) {
     console.error("Failed to verify wallet signature", err);
@@ -60,7 +61,7 @@ export const getMe = async (req: Request, res: Response) => {
       return res.status(401).json({ error: "Unauthorized" });
     }
 
-    const user = await UserService.getCurrentUser(userId);
+    const user = await getCurrentUser(userId);
 
     return res.json({
       success: true,
@@ -80,15 +81,18 @@ export const getMe = async (req: Request, res: Response) => {
 export const updateProfile = async (req: Request, res: Response) => {
   try {
     const userId = req.userId;
-    const { displayName, avatarUrl } = req.body;
+    const { displayName, avatarUrl, lowBalanceAlert, depositNotifications, defaultModel } = req.body;
 
     if (!userId) {
       return res.status(401).json({ error: "Unauthorized" });
     }
 
-    const user = await UserService.updateUserProfile(userId, {
+    const user = await updateUserProfile(userId, {
       displayName,
       avatarUrl,
+      lowBalanceAlert,
+      depositNotifications,
+      defaultModel
     });
 
     return res.json({

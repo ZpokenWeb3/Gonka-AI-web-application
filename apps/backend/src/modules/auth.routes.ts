@@ -1,16 +1,14 @@
 import {Router} from "express";
 import { authMiddleware } from "../middlewares/auth.middleware";
-import * as AuthController from "../controllers/auth.controller";
+import { getMe, getNonce, updateProfile, verifySignature } from "../controllers/auth.controller";
 
 const router = Router();
 
-// Публичные роуты
-router.post("/nonce", AuthController.getNonce);
-router.post("/verify", AuthController.verifySignature);
+router.post("/nonce", getNonce);
+router.post("/verify", verifySignature);
 
-// Защищенные роуты (требуют аутентификации)
 router.use(authMiddleware);
-router.get("/me", AuthController.getMe);
-router.put("/profile", AuthController.updateProfile);
+router.get("/me", getMe);
+router.put("/profile", updateProfile);
 
 export default router;

@@ -1,7 +1,7 @@
 'use client'
 
 import { MoveRight } from "lucide-react"
-import { FC, ReactNode, useState } from "react"
+import { FC, ReactNode, useState, useEffect } from "react"
 import { Switcher } from "../ui/switcher"
 
 interface Props {
@@ -10,6 +10,8 @@ interface Props {
     text?: string
     version?: string
     switcher?: boolean
+    onSwitchChange?: (enabled: boolean) => void
+    initialSwitchState?: boolean
 }
 
 export const SettingsBlock: FC<Props> = ({
@@ -17,9 +19,22 @@ export const SettingsBlock: FC<Props> = ({
     title,
     text,
     version,
-    switcher
+    switcher,
+    onSwitchChange,
+    initialSwitchState
 }) => {
-    const [enabled, setEnabled] = useState(false)
+    const [enabled, setEnabled] = useState(initialSwitchState || false)
+
+    useEffect(() => {
+        setEnabled(initialSwitchState || false)
+    }, [initialSwitchState])
+
+    const handleSwitchChange = (newState: boolean) => {
+        setEnabled(newState)
+        if (onSwitchChange) {
+            onSwitchChange(newState)
+        }
+    }
 
     return (
         <div className="flex items-center justify-between cursor-pointer bg-[#09090B] hover:bg-[#18181c] p-4 border-b border-[#232328] transition-all duration-300 first:rounded-t-[15px] last:rounded-b-[15px] last:border-b-0">
@@ -36,7 +51,7 @@ export const SettingsBlock: FC<Props> = ({
             {switcher !== undefined ? (
                 <Switcher 
                     checked={enabled}
-                    onChange={() => setEnabled(prev => !prev)}/>
+                    onChange={handleSwitchChange}/>
             ) : version ? (
                 <p className="text-[13px] text-white">{version}</p>
             ) : (

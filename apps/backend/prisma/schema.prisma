@@ -21,7 +21,7 @@ model User {
   displayName String?
   avatarUrl   String?
 
-  defaultModel ChatModel @default(CHATGPT4)
+  defaultModel ChatModel?
   temperaure Float @default(0.7)
   systemPrompt String?
 
@@ -393,8 +393,11 @@ enum WalletChain {
 }
 
 enum ChatModel{
-  CHATGPT4
-  CLAUDE
+  QWEN25
+  QWEN323
+  QWEN332
+  QWENQWQ
+  REDHAT
 
   @@map("chat_model")
 }

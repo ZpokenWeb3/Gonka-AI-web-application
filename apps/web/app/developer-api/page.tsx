@@ -1,18 +1,60 @@
-import { SettingsSection } from "../../components/settings/settings-section";
-import { ABOUT_DATA, CHATSETTINGS_DATA, NOTIFICATIONS_DATA } from "../../types/contstants";
+'use client'
+
 import { SectionTitle } from "../../components/ui/section-title";
 import { DeveloperTop } from "../../components/developer/developer-top";
 import { Button } from "../../components/ui/button";
 import { UpgradeBlock } from "../../components/developer/upgrade-block";
 import { APIBlock } from "../../components/developer/api-block";
-import { BookMarked, ChartBarIncreasing, MessageCircleMore, TestTubeDiagonal } from "lucide-react";
+import { BookMarked, ChartBarIncreasing, Frown, MessageCircleMore, TestTubeDiagonal } from "lucide-react";
+import { useDeveloperApi } from "../../hooks/useDeveloperApi";
 
 export default function DeveloperPage() {
+  const { apiKeys, loading, deleteApiKeyById, createNewApiKey } = useDeveloperApi();
+
+  const handleDeleteKey = async (keyId: string) => {
+    try {
+      await deleteApiKeyById(keyId);
+    } catch (error) {
+      console.error("Failed to delete API key:", error);
+    }
+  };
+
+  const handleCreateKey = async (name: string) => {
+    try {
+      const result = await createNewApiKey(name);
+      return { fullKey: result.fullKey };
+    } catch (error) {
+      console.error("Failed to create API key:", error);
+      throw error;
+    }
+  };
+
   return (
       <div className={`flex flex-col gap-15 p-10 w-full h-screen`}>
-        <DeveloperTop/>
+        <DeveloperTop onCreateKey={handleCreateKey}/>
         <div className="flex flex-col gap-7">
-           <APIBlock/>
+          <div className="flex items-center justify-between w-full">
+            <h2 className="text-[18px] leading-4.5 text-white font-semibold">API Keys</h2>
+          </div>
+
+          {loading ? (
+            <div className="text-center py-8 text-[#707070]">
+              Loading API keys...
+            </div>
+          ) : apiKeys.length === 0 ? (
+            <div className="text-center py-8 text-[#707070]">
+              <p>No API keys found. Create your first key to get started.</p>
+            </div>
+          ) : (
+            apiKeys.map((key) => (
+              <APIBlock 
+                key={key.id}
+                apiKey={key}
+                onDelete={() => handleDeleteKey(key.id)}
+              />
+            ))
+          )}
+
             <div className="flex flex-col gap-3">
                 <SectionTitle text="Usage This Month"/>
                 <div className="flex items-center w-full gap-3">

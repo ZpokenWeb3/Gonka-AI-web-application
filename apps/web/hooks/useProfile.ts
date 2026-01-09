@@ -23,6 +23,9 @@ export function useProfile() {
   const updateUserProfile = async (data: {
     displayName?: string;
     avatarUrl?: string;
+    lowBalanceAlert?: boolean;
+    depositNotifications?: boolean;
+    defaultModel?: "QWEN25" | "QWEN323" | "QWEN332" | "QWENQWQ" | "REDHAT";
   }) => {
     try {
       setUpdating(true);

@@ -17,9 +17,8 @@ export function encrypt(plaintext: string): { ciphertext: Buffer; nonce: Buffer 
     cipher.final(),
   ]);
 
-  const authTag = cipher.getAuthTag(); // 16 байт
+  const authTag = cipher.getAuthTag(); 
 
-  // Объединяем: ciphertext + authTag
   const contentEncrypted = Buffer.concat([encrypted, authTag]);
 
   return {
@@ -29,7 +28,6 @@ export function encrypt(plaintext: string): { ciphertext: Buffer; nonce: Buffer 
 }
 
 export function decrypt(contentEncrypted: Buffer, nonce: Buffer): string {
-  // Последние 16 байт — это authTag
   const authTag = contentEncrypted.slice(-16);
   const ciphertext = contentEncrypted.slice(0, -16);
 

@@ -4,13 +4,19 @@ import { useEffect, useRef, useState } from "react"
 import {useChatStore} from "../../store/useChatStore";
 import {Logo} from "../ui/logo";
 import { BottomSection } from "./bottom-section";
+import { useChat } from "../../hooks/useChats";
 
+interface ChatWrapperProps {
+    chatId?: string;
+}
 
-export const ChatWrapper = () => {
+export const ChatWrapper = ({ chatId }: ChatWrapperProps) => {
     const messages = useChatStore((s) => s.messages)
     const containerRef = useRef<HTMLDivElement | null>(null)
     const [typingText, setTypingText] = useState("");
     const [isTyping, setIsTyping] = useState(false);
+    
+    const { data: chatData, isLoading: chatLoading } = useChat(chatId || "");
 
     useEffect(() => {
         if (!containerRef.current) return
@@ -43,6 +49,14 @@ export const ChatWrapper = () => {
 
     const lastMessage = messages[messages.length - 1]
     const showAssistantPlaceholder = lastMessage?.role === "user"
+
+    if (chatLoading) {
+        return (
+            <div className="flex flex-col items-center justify-center w-full h-full">
+                <div className="animate-pulse">Loading chat...</div>
+            </div>
+        );
+    }
 
     return (
         <div className="flex flex-col w-full flex-1">

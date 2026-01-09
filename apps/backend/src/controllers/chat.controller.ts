@@ -1,7 +1,6 @@
 import { Request, Response } from "express";
 import { createChat as createChatService, deleteChatById, getChatById, getUserChats } from "../services/chat.service";
 import { sendMessageAndGetResponse } from "../services/message.service";
-import { success } from "zod";
 
 declare global {
     namespace Express {

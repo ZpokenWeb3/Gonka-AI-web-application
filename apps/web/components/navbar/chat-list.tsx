@@ -1,14 +1,10 @@
-import { useEffect } from "react";
 import { MessageSquare } from "lucide-react";
 import { ChatBlock } from "./chat-block";
-import { useChatStore } from "../../store/useChatStore";
+import { useChats } from "../../hooks/useChats";
 
 export const ChatList = () => {
-    const { chats, loadChats, isLoading, error } = useChatStore();
-
-    useEffect(() => {
-        loadChats();
-    }, [loadChats]);
+    const { data: chatsData, isLoading, error, refetch } = useChats();
+    const chats = chatsData?.data || [];
 
     if (isLoading && chats.length === 0) {
         return (
@@ -23,9 +19,9 @@ export const ChatList = () => {
         return (
             <div className="flex flex-col flex-1 items-center justify-center gap-2">
                 <MessageSquare width={30} height={30} color="#ef4444" />
-                <p className="text-xs text-red-400">Error: {error}</p>
+                <p className="text-xs text-red-400">Error: {error.message}</p>
                 <button 
-                    onClick={loadChats}
+                    onClick={() => refetch()}
                     className="text-xs text-blue-400 hover:text-blue-300"
                 >
                     Retry
