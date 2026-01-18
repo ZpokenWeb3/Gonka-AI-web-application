@@ -7,6 +7,8 @@ import { UpgradeBlock } from "../../components/developer/upgrade-block";
 import { APIBlock } from "../../components/developer/api-block";
 import { BookMarked, ChartBarIncreasing, Frown, MessageCircleMore, TestTubeDiagonal } from "lucide-react";
 import { useDeveloperApi } from "../../hooks/useDeveloperApi";
+import { showCustomToast } from "../../components/ui/custom-toast";
+import Link from "next/link";
 
 export default function DeveloperPage() {
   const { apiKeys, loading, deleteApiKeyById, createNewApiKey } = useDeveloperApi();
@@ -14,6 +16,7 @@ export default function DeveloperPage() {
   const handleDeleteKey = async (keyId: string) => {
     try {
       await deleteApiKeyById(keyId);
+      showCustomToast('success', 'API Key deleted successfully')
     } catch (error) {
       console.error("Failed to delete API key:", error);
     }
@@ -75,10 +78,12 @@ export default function DeveloperPage() {
                         <TestTubeDiagonal width={10} height={10}/>
                         Playground
                     </Button>
-                    <Button className="w-[150px]" variant="outline">
+                    <Link href="/analytics">
+                      <Button className="w-[150px]" variant="outline">
                         <ChartBarIncreasing width={10} height={10}/>
                         Analytics
                     </Button>
+                    </Link>
                     <Button className="w-[150px]" variant="outline">
                         <MessageCircleMore width={10} height={10}/>
                         Support

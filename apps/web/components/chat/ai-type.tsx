@@ -1,4 +1,3 @@
-import { Zap } from "lucide-react"
 import { FC, ReactNode } from "react"
 
 interface Props{

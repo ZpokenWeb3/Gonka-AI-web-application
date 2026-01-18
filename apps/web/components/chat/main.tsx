@@ -1,4 +1,4 @@
-import { useChatStore } from "../../store/useChatStore";
+import { useAccount } from "wagmi";
 import {Button} from "../ui/button";
 import { GettingStarted } from "../ui/getting-started";
 import { Checklist } from "./checklist";
@@ -7,6 +7,7 @@ import { useRouter } from "next/navigation";
 
 export const Main = () => {
     const router = useRouter();
+    const {address} = useAccount();
 
     return (
         <div className="flex p-7 gap-5 h-full">
@@ -19,13 +20,12 @@ export const Main = () => {
                 </div>
                 <div className="flex flex-wrap w-[430px] gap-3">
                     <Button className="w-fit" variant="outline">No password needed</Button>
-                    <Button className="w-fit" variant="outline">Transparent usage + costs
-                    </Button>
+                    <Button className="w-fit" variant="outline">Transparent usage + costs</Button>
                     <Button className="w-fit" variant="outline">Wallet as identity</Button>
                 </div>
                 <div className="flex items-center gap-3 w-[200px]">
                     <Button onClick={() => router.push('/chat')} variant="secondary">Get Started</Button>
-                    <Button variant="outline">Connect Wallet</Button>
+                    {!address && <Button variant="outline">Connect Wallet</Button>}
                 </div>
                 <p className="text-[13px] cursor-pointer underline text-[#8A8A93]">What's a wallet</p>
             </div>

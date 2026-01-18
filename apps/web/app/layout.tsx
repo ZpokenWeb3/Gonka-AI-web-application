@@ -6,6 +6,7 @@ import { Poppins } from "next/font/google";
 import {Navbar} from "../components/navbar/navbar";
 import { Header } from "../components/header";
 import Transition from "../components/ui/transition";
+import { Toaster } from "sonner";
 
 const poppins = Poppins({
   subsets: ["latin"],
@@ -35,6 +36,7 @@ export default function RootLayout({
               </Transition>
             </div>
           </div>
+          <Toaster/>
         </Providers>
       </body>
     </html>

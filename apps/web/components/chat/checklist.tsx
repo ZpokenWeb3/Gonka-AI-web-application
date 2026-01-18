@@ -1,4 +1,3 @@
-import { Check } from "lucide-react";
 import { useAccount } from "wagmi";
 import { ChecklistItem } from "./checklist-item";
 

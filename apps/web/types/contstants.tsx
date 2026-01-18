@@ -1,4 +1,4 @@
-import { Bot, Thermometer, StickyNote, Info, FileText, Laptop, Lock, BanknoteArrowUp, PiggyBank, User, Wallet } from "lucide-react";
+import { Bot, Thermometer, StickyNote, Info, FileText, Laptop, Lock, BanknoteArrowUp, PiggyBank, User, Wallet, MapPin, Moon, Globe } from "lucide-react";
 import React from "react";
 
 export const HEADER_HEIGHT = 77;
@@ -20,6 +20,48 @@ export const CHATSETTINGS_DATA = (userData: any) => [
     logo: <StickyNote color="#ffffff" />,
     title: 'System Prompt',
     text: 'Custom instructions for AI',
+    version: userData?.systemPrompt || 'Not set'
+  }
+];
+
+export const ACCOUNT_DATA = (userData: any) => [
+  {
+    logo: <Wallet color="#ffffff" />,
+    title: 'Connected Wallet',
+    text: 'MetaMask • Ethereum',
+    version: userData?.systemPrompt || 'Not set'
+  },
+  {
+    logo: <MapPin color="#ffffff" />,
+    title: 'Deposit Address',
+    text: 'Gonka chain deposit address',
+    version: userData?.systemPrompt || 'Not set'
+  },
+  {
+    logo: <Lock color="#ffffff" />,
+    title: 'Encryption Key',
+    text: 'Derived from wallet signature',
+    version: userData?.systemPrompt || 'Not set'
+  }
+];
+
+export const ACCOUNT_PREFERENCES_DATA = (userData: any) => [
+  {
+    logo: <Bot color="#ffffff" />,
+    title: 'Default Model',
+    text: 'Used for new chats',
+    version: userData?.systemPrompt || 'Not set'
+  },
+  {
+    logo: <Moon color="#ffffff" />,
+    title: 'Theme',
+    text: 'Appearance settings',
+    version: userData?.systemPrompt || 'Not set'
+  },
+  {
+    logo: <Globe color="#ffffff" />,
+    title: 'Language',
+    text: 'Interface language',
     version: userData?.systemPrompt || 'Not set'
   }
 ];

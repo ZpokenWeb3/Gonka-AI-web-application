@@ -2,7 +2,7 @@
 
 import {ConnectButtonWallet} from "./ui/connect-button-wallet";
 import {Button} from "./ui/button";
-import {Search, Settings, Wallet} from "lucide-react";
+import {Plus, Search, Settings, Wallet} from "lucide-react";
 import Link from "next/link";
 import { useAccount, useReadContract } from "wagmi";
 import { erc20Abi, formatUnits } from "viem";
@@ -36,10 +36,15 @@ export const Header = () => {
                 />
             </div>
             <div className="flex gap-2">
-                <Button className="w-fit h-10" variant="outline">
-                    <Wallet width={30} height={30}/>
-                    Balance: ${formattedBalance} GNK
-                </Button>
+                <Link href="/deposit">
+                    <Button className="w-fit h-10" variant="outline">
+                        <Wallet width={30} height={30}/>
+                        Balance: ${formattedBalance} GNK
+                        <div className="flex items-center justify-center bg-[#c9c9c9] w-4 h-4 text-lg text-[#131316] rounded-full">
+                            +
+                        </div>
+                    </Button>
+                </Link>
                 <ConnectButtonWallet/>
                 <Link href="/settings">
                     <Button className="w-10 h-10" variant="outline">

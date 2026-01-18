@@ -5,7 +5,8 @@ import { SettingsSection } from "../../components/settings/settings-section";
 import { ABOUT_DATA, CHATSETTINGS_DATA, NOTIFICATIONS_DATA } from "../../types/contstants";
 import { SectionTitle } from "../../components/ui/section-title";
 import { useProfile } from "../../hooks/useProfile";
-import { SettingsSkeleton } from "../../components/ui/skeleton";
+import { SettingsSkeleton } from "../../components/settings/settings-skeleton";
+
 
 export default function SettingsPage() {
     const { user, loading, updateUserProfile } = useProfile();
