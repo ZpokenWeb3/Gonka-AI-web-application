@@ -5,20 +5,24 @@ import { useState } from "react";
 import {useChatStore} from "../../store/useChatStore";
 import { sendGonkaChatMessage } from "../../lib/gonkaClient";
 
-export const Input = () => {
+interface InputProps {
+    chatId?: string;
+}
+
+export const Input = ({ chatId }: InputProps) => {
     const [value, setValue] = useState("");
     const sendMessage = useChatStore((s) => s.sendMessage);
 
     const addAssistantMessage = useChatStore((s) => s.addAssistantMessage);
 
     const send = async () => {
-        if (!value.trim()) return;
+        if (!value.trim() || !chatId) return;
         const text = value;
         sendMessage(text);
         setValue("");
 
         try {
-            const data = await sendGonkaChatMessage(text);
+            const data = await sendGonkaChatMessage(text, chatId);
             const content = data.choices?.[0]?.message?.content;
             if (content) {
                 addAssistantMessage(content);

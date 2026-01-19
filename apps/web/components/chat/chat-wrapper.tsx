@@ -102,7 +102,7 @@ export const ChatWrapper = ({ chatId }: ChatWrapperProps) => {
                     </>
                 )}
             </div>
-            <BottomSection/>
+            <BottomSection chatId={chatId}/>
         </div>
     )
 }

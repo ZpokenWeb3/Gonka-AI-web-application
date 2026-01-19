@@ -1,6 +1,7 @@
 import { ChatSession, PrismaClient } from "@prisma/client"
 import { Decimal } from "@prisma/client/runtime/library";
 import { getMessagesBySessionId } from "./message.service";
+import { getCurrentUser } from "./user.service";
 
 const prisma = new PrismaClient();
 
@@ -14,6 +15,12 @@ export const createChat = async (
         maxTokens?: number
     } = {}
 ): Promise<ChatSession> => {
+    try {
+        await getCurrentUser(userId);
+    } catch (error) {
+        throw new Error(`User with ID ${userId} not found`);
+    }
+
     const {
         title = "New Chat",
         model = "Qwen",

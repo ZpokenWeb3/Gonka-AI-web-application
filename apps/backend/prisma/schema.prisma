@@ -217,8 +217,8 @@ model Message {
 
   role MessageRole
 
-  contentEncrypted Bytes
-  nonce            Bytes
+  contentEncrypted String
+  nonce            String
   contentHash      String?
 
   promptTokens     Int?

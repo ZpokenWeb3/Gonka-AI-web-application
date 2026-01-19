@@ -1,43 +1,48 @@
-import crypto from 'crypto';
+import crypto from "crypto";
 
-const ENCRYPTION_KEY_HEX = process.env.ENCRYPTION_KEY;
+const KEY_HEX = process.env.ENCRYPTION_KEY;
 
-if (!ENCRYPTION_KEY_HEX || ENCRYPTION_KEY_HEX.length !== 64) {
-  throw new Error('ENCRYPTION_KEY must be 64 hex chars (32 bytes) for AES-256');
+if (!KEY_HEX || KEY_HEX.length !== 64) {
+  throw new Error("ENCRYPTION_KEY must be 64 hex chars (32 bytes)");
 }
 
-const KEY = Buffer.from(ENCRYPTION_KEY_HEX, 'hex');
+const KEY = Buffer.from(KEY_HEX, "hex");
 
-export function encrypt(plaintext: string): { ciphertext: Buffer; nonce: Buffer } {
-  const nonce = crypto.randomBytes(12); 
-  const cipher = crypto.createCipheriv('aes-256-gcm', KEY, nonce);
+const ALGO = "aes-256-gcm";
 
-  const encrypted = Buffer.concat([
-    cipher.update(plaintext, 'utf8'),
-    cipher.final(),
-  ]);
+export function encrypt(text: string): { ciphertextB64: string; nonceB64: string } {
+  const nonce = crypto.randomBytes(12);
+  const cipher = crypto.createCipheriv(ALGO, KEY, nonce);
 
-  const authTag = cipher.getAuthTag(); 
+  const encrypted = Buffer.concat([cipher.update(text, "utf8"), cipher.final()]);
+  const tag = cipher.getAuthTag();
 
-  const contentEncrypted = Buffer.concat([encrypted, authTag]);
+  const ciphertextB64 = Buffer.concat([encrypted, tag]).toString("base64");
+  const nonceB64 = nonce.toString("base64");
 
-  return {
-    ciphertext: contentEncrypted,
-    nonce,
-  };
+  return { ciphertextB64, nonceB64 };
 }
 
-export function decrypt(contentEncrypted: Buffer, nonce: Buffer): string {
-  const authTag = contentEncrypted.slice(-16);
-  const ciphertext = contentEncrypted.slice(0, -16);
+export function decrypt(ciphertextB64: string, nonceB64: string): string {
+  const data = Buffer.from(ciphertextB64, "base64");
+  const nonce = Buffer.from(nonceB64, "base64");
 
-  const decipher = crypto.createDecipheriv('aes-256-gcm', KEY, nonce);
-  decipher.setAuthTag(authTag);
+  const tag = data.subarray(data.length - 16);
+  const ciphertext = data.subarray(0, data.length - 16);
 
-  const decrypted = Buffer.concat([
-    decipher.update(ciphertext),
-    decipher.final(),
-  ]);
+  const decipher = crypto.createDecipheriv(ALGO, KEY, nonce);
+  decipher.setAuthTag(tag);
 
-  return decrypted.toString('utf8');
+  const decrypted = Buffer.concat([decipher.update(ciphertext), decipher.final()]);
+
+  return decrypted.toString("utf8");
+}
+
+export function computeContentHash(content: string): string {
+  return crypto.createHash("sha256").update(content, "utf8").digest("hex");
+}
+
+export function verifyContentIntegrity(content: string, storedHash: string): boolean {
+  const computedHash = computeContentHash(content);
+  return computedHash === storedHash;
 }

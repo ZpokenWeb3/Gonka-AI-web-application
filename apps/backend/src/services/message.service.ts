@@ -1,5 +1,5 @@
 import { PrismaClient, Message, MessageRole } from "@prisma/client";
-import { encrypt, decrypt } from "../utils/encryption";
+import { encrypt, decrypt, computeContentHash, verifyContentIntegrity } from "../utils/encryption";
 import { gonkaChat } from "./gonka.service";
 
 const prisma = new PrismaClient();
@@ -23,23 +23,22 @@ interface SendMessageParams {
   model?: string;
 }
 
-export const createMessage = async (
-  params: CreateMessageParams
-): Promise<Message> => {
+export const createMessage = async (params: CreateMessageParams): Promise<Message> => {
   const { content, ...otherParams } = params;
-  
-  const { ciphertext, nonce } = encrypt(content);
-  
-  const message = await prisma.message.create({
+
+  const { ciphertextB64, nonceB64 } = encrypt(content);
+  const contentHash = computeContentHash(content);
+
+  return prisma.message.create({
     data: {
       ...otherParams,
-      contentEncrypted: Buffer.from(ciphertext),
-      nonce: Buffer.from(nonce),
+      contentEncrypted: ciphertextB64,
+      nonce: nonceB64,
+      contentHash,
     },
   });
-
-  return message;
 };
+
 
 export const sendMessageAndGetResponse = async ({
   sessionId,
@@ -130,12 +129,26 @@ export const getMessagesBySessionId = async (
     where: { sessionId },
     orderBy: { createdAt: "asc" },
   });
-  
-  return messages.map(message => ({
-    ...message,
-    decryptedContent: decrypt(Buffer.from(message.contentEncrypted), Buffer.from(message.nonce)),
-  }));
+
+  return messages.map((m) => {
+    const decryptedContent = decrypt(m.contentEncrypted, m.nonce);
+    
+    if (m.contentHash) {
+      if (!verifyContentIntegrity(decryptedContent, m.contentHash)) {
+        console.error(`Data integrity violation for message ${m.id}`);
+        throw new Error(`Message ${m.id} has been tampered with or corrupted`);
+      }
+    } else {
+      console.warn(`Message ${m.id} has no contentHash (legacy data)`);
+    }
+    
+    return {
+      ...m,
+      decryptedContent,
+    };
+  });
 };
+
 
 export const getMessageById = async (
   messageId: string
@@ -143,14 +156,26 @@ export const getMessageById = async (
   const message = await prisma.message.findUnique({
     where: { id: messageId },
   });
-  
+
   if (!message) return null;
+
+  const decryptedContent = decrypt(message.contentEncrypted, message.nonce);
   
+  if (message.contentHash) {
+    if (!verifyContentIntegrity(decryptedContent, message.contentHash)) {
+      console.error(`Data integrity violation for message ${message.id}`);
+      throw new Error(`Message ${message.id} has been tampered with or corrupted`);
+    }
+  } else {
+    console.warn(`Message ${message.id} has no contentHash (legacy data)`);
+  }
+
   return {
     ...message,
-    decryptedContent: decrypt(Buffer.from(message.contentEncrypted), Buffer.from(message.nonce)),
+    decryptedContent,
   };
 };
+
 
 export const deleteMessage = async (messageId: string): Promise<Message | null> => {
   try {
