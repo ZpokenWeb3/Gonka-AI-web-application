@@ -1,0 +1,75 @@
+version: '3.8'
+
+services:
+  postgres:
+    image: postgres:15-alpine
+    container_name: gonka-postgres
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: gonka
+      POSTGRES_USER: gonka
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-gonka123}
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      - ./apps/backend/prisma/init.sql:/docker-entrypoint-initdb.d/init.sql:ro
+    ports:
+      - "5432:5432"
+    networks:
+      - gonka-network
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U gonka -d gonka"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  backend:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: gonka-backend
+    restart: unless-stopped
+    env_file:
+      - apps/backend/.env
+    ports:
+      - "5000:5000"
+    depends_on:
+      postgres:
+        condition: service_healthy
+    networks:
+      - gonka-network
+    volumes:
+      - ./logs:/app/logs
+    healthcheck:
+      test: ["CMD", "wget", "--no-verbose", "--tries=1", "--spider", "http://localhost:5000/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+  frontend:
+    build:
+      context: .
+      dockerfile: Dockerfile.frontend
+    container_name: gonka-frontend
+    restart: unless-stopped
+    env_file:
+      - apps/web/.env.local
+    ports:
+      - "3000:3000"
+    depends_on:
+      backend:
+        condition: service_healthy
+    networks:
+      - gonka-network
+    healthcheck:
+      test: ["CMD", "wget", "--no-verbose", "--tries=1", "--spider", "http://localhost:3000"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+  volumes:
+  postgres_data:
+    driver: local
+
+networks:
+  gonka-network:
+    driver: bridge
