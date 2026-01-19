@@ -6,6 +6,7 @@ import { ABOUT_DATA, CHATSETTINGS_DATA, NOTIFICATIONS_DATA } from "../../types/c
 import { SectionTitle } from "../../components/ui/section-title";
 import { useProfile } from "../../hooks/useProfile";
 import { SettingsSkeleton } from "../../components/settings/settings-skeleton";
+import { showCustomToast } from "../../components/ui/custom-toast";
 
 
 export default function SettingsPage() {
@@ -14,6 +15,11 @@ export default function SettingsPage() {
     const handleLowBalanceChange = async (enabled: boolean) => {
         try {
             await updateUserProfile({ lowBalanceAlert: enabled });
+            if(enabled == true){
+                showCustomToast('success', 'Low Balance Alert notifications enabled')
+            } else {
+                showCustomToast('success', 'Low Balance Alert notifications disabled')
+            }
         } catch (error) {
             console.error('Failed to update low balance alert:', error);
         }
@@ -22,6 +28,11 @@ export default function SettingsPage() {
     const handleDepositNotificationChange = async (enabled: boolean) => {
         try {
             await updateUserProfile({ depositNotifications: enabled });
+            if(enabled == true){
+                showCustomToast('success', 'Deposit notifications enabled')
+            } else {
+                showCustomToast('success', 'Deposit notifications disabled')
+            }
         } catch (error) {
             console.error('Failed to update deposit notifications:', error);
         }
