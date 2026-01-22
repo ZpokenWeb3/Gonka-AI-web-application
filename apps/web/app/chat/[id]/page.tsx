@@ -16,8 +16,9 @@ export default function ChatPage() {
             <ChatWrapper chatId={chatId}/>
             {showModelModal && (
                 <Modal 
-                    form={<ModelForm onSelect={selectModel} disabled={loading} />}
+                    isOpen={showModelModal}
                     onClose={() => {}}
+                    form={<ModelForm onSelect={selectModel} disabled={loading} />}
                 />
             )}
         </div>

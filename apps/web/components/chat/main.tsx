@@ -35,6 +35,7 @@ export const Main = () => {
             </div>
 
             <GettingStarted/>
+
         </div>
     )
 }

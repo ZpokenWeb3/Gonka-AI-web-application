@@ -8,7 +8,6 @@ import { useProfile } from "../../hooks/useProfile";
 import { SettingsSkeleton } from "../../components/settings/settings-skeleton";
 import { showCustomToast } from "../../components/ui/custom-toast";
 
-
 export default function SettingsPage() {
     const { user, loading, updateUserProfile } = useProfile();
 

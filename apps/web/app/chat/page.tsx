@@ -7,6 +7,7 @@ import { useModelSelection } from "../../hooks/useModelSelection";
 import { ModelForm } from "../../components/chat/model-form";
 import { Modal } from "../../components/ui/modal";
 
+
 export default function ChatPage() {
     const router = useRouter();
     const createChatMutation = useCreateChat();
@@ -41,8 +42,9 @@ export default function ChatPage() {
         <div className={`flex flex-col items-center justify-center w-full h-full`}>
             {showModelModal && (
                 <Modal 
-                    form={<ModelForm onSelect={selectModel} disabled={loading} />}
+                    isOpen={showModelModal}
                     onClose={() => {}}
+                    form={<ModelForm onSelect={selectModel} disabled={loading} />}
                 />
             )}
             {!showModelModal && !chatsData?.data && (

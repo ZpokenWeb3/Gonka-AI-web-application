@@ -37,16 +37,19 @@ export type CreateChatRequest = {
 export type CreateChatResponse = {
     success: boolean;
     data: ChatSession;
+    message?: string;
 };
 
 export type GetChatsResponse = {
     success: boolean;
     data: ChatSession[];
+    message?: string;
 };
 
 export type GetChatResponse = {
     success: boolean;
     data: ChatSession;
+    message?: string;
 };
 
 const apiClient = axios.create({

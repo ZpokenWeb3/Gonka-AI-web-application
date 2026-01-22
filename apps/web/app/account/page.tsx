@@ -8,6 +8,7 @@ import { SectionTitle } from "../../components/ui/section-title";
 import { useProfile } from "../../hooks/useProfile";
 import { ACCOUNT_DATA, ACCOUNT_PREFERENCES_DATA} from "../../types/contstants";
 
+
 export default function AccountPage() {
   const { user, loading, updateUserProfile } = useProfile();
 

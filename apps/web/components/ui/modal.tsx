@@ -2,10 +2,13 @@ import { FC, ReactNode } from "react"
 
 interface Props{
     form: ReactNode
-    onClose?: () => void
+    isOpen: boolean
+    onClose: () => void
 }
 
-export const Modal:FC<Props> = ({form, onClose}) => {
+export const Modal:FC<Props> = ({form, isOpen, onClose}) => {
+    if (!isOpen) return null
+    
     return (
         <div className="flex z-[100] items-center justify-center fixed inset-0 bg-black/50 backdrop-blur-sm" onClick={onClose}>
             <div className="flex sm:items-center items-end justify-center relative h-full" onClick={(e) => e.stopPropagation()}>

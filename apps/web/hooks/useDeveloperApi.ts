@@ -22,18 +22,26 @@ export function useDeveloperApi() {
   };
 
   const createNewApiKey = async (name: string): Promise<CreateApiKeyResponse> => {
-    try {
-      setCreating(true);
-      const newKey = await createApiKey(name);
-      setApiKeys(prev => [newKey as ApiKey, ...prev]);
-      return newKey;
-    } catch (error) {
-      console.error("Failed to create API key:", error);
-      throw error;
-    } finally {
-      setCreating(false);
-    }
-  };
+  try {
+    setCreating(true);
+    const newKey = await createApiKey(name);
+
+    // Convert CreateApiKeyResponse to ApiKey
+    const apiKey: ApiKey = {
+      ...newKey,
+      lastUsedAt: null, // or new Date().toISOString() if you want
+    };
+
+    setApiKeys(prev => [apiKey, ...prev]);
+    return newKey;
+  } catch (error) {
+    console.error("Failed to create API key:", error);
+    throw error;
+  } finally {
+    setCreating(false);
+  }
+};
+
 
   const deleteApiKeyById = async (keyId: string): Promise<void> => {
     try {

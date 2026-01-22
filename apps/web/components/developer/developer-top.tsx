@@ -30,7 +30,7 @@ export const DeveloperTop = ({ onCreateKey }: Props) => {
             </Button>
 
             {open && (
-                <Modal form={ <CreationKeyForm onClose={handleClose} onCreateKey={onCreateKey} /> }/>
+                <Modal isOpen={open} onClose={handleClose} form={ <CreationKeyForm onClose={handleClose} onCreateKey={onCreateKey} /> }/>
             )}
         </div>
     )

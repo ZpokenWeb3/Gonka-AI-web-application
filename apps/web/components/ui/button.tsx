@@ -4,7 +4,6 @@ import { cva, type VariantProps } from "class-variance-authority"
 import {cn} from "../../lib/utils";
 
 
-
 const buttonVariants = cva(
   "inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-md text-sm font-medium transition-all disabled:pointer-events-none disabled:opacity-50 [&_svg]:pointer-events-none [&_svg:not([class*='size-'])]:size-4 shrink-0 [&_svg]:shrink-0 outline-none focus-visible:border-ring focus-visible:ring-ring/50 focus-visible:ring-[3px] aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40 aria-invalid:border-destructive",
   {
@@ -12,7 +11,7 @@ const buttonVariants = cva(
       variant: {
         default: "flex items-center justify-center cursor-pointer gap-2 text-xs hover:bg-[#18181c] duration-200 transition-all text-[#3F434D] border border-[#3F434D] rounded-md px-3 py-2",
         destructive:
-          "bg-destructive text-white hover:bg-destructive/90 focus-visible:ring-destructive/20 dark:focus-visible:ring-destructive/40 dark:bg-destructive/60",
+          "flex items-center justify-center gap-2 text-sm text-[#c9c9c9] font-medium cursor-pointer w-full h-[36px] bg-[#131316] transition-all duration-300 border border-[#232328] hover:border-[#6B26D9] rounded-[8px]",
         outline:
           "flex items-center justify-center gap-2 text-sm text-[#c9c9c9] font-medium cursor-pointer w-full h-[36px] bg-[#131316] hover:bg-[#232328] transition-all duration-300 border border-[#232328] rounded-[8px]",
         secondary:
