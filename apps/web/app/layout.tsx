@@ -5,6 +5,7 @@ import dynamic from "next/dynamic";
 import { Navbar } from "../components/navbar/navbar";
 import { Header } from "../components/header";
 import Transition from "../components/ui/transition";
+import "../lib/polyfills";
 
 const Providers = dynamic(
   () => import("./providers").then((m) => m.Providers),

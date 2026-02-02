@@ -16,30 +16,34 @@ import {
 
 import { connectorsForWallets } from "@rainbow-me/rainbowkit";
 
-export const config = createConfig({
-  chains: [mainnet, polygon, optimism, arbitrum, sepolia],
-  transports: {
-    [mainnet.id]: http(),
-    [polygon.id]: http(),
-    [optimism.id]: http(),
-    [arbitrum.id]: http(),
-    [sepolia.id]: http(),
-  },
-  connectors: connectorsForWallets(
-    [
+function getConfig() {
+  return createConfig({
+    chains: [mainnet, polygon, optimism, arbitrum, sepolia],
+    transports: {
+      [mainnet.id]: http(),
+      [polygon.id]: http(),
+      [optimism.id]: http(),
+      [arbitrum.id]: http(),
+      [sepolia.id]: http(),
+    },
+    connectors: connectorsForWallets(
+      [
+        {
+          groupName: "Wallets",
+          wallets: [
+            metaMaskWallet,
+            walletConnectWallet,
+            coinbaseWallet,
+          ],
+        },
+      ],
       {
-        groupName: "Wallets",
-        wallets: [
-          metaMaskWallet,
-          walletConnectWallet,
-          coinbaseWallet,
-        ],
-      },
-    ],
-    {
-      appName: "My RainbowKit App",
-      projectId: "f0248126e0f85f7e80132287496a8c89",
-    }
-  ),
-  ssr: false,
-});
+        appName: "My RainbowKit App",
+        projectId: "f0248126e0f85f7e80132287496a8c89",
+      }
+    ),
+    ssr: false,
+  });
+}
+
+export const config = getConfig();

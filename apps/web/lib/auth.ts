@@ -35,7 +35,7 @@ const apiClient = axios.create({
   headers: {
     "Content-Type": "application/json",
   },
-  timeout: 10000,
+  timeout: 30000, // Увеличено до 30 секунд для диагностики
 });
 
 
@@ -44,8 +44,33 @@ apiClient.interceptors.request.use((config) => {
   if (token) {
     config.headers.Authorization = `Bearer ${token}`;
   }
+  console.log(`[API Request] ${config.method?.toUpperCase()} ${config.url}`, {
+    baseURL: config.baseURL,
+    timeout: config.timeout,
+  });
   return config;
 });
+
+apiClient.interceptors.response.use(
+  (response) => {
+    console.log(`[API Response] ${response.config.method?.toUpperCase()} ${response.config.url} - ${response.status}`);
+    return response;
+  },
+  (error) => {
+    if (error.code === 'ECONNABORTED') {
+      console.error(`[API Timeout] ${error.config?.method?.toUpperCase()} ${error.config?.url} - Request timeout after ${error.config?.timeout}ms`);
+    } else if (error.code === 'ECONNREFUSED') {
+      console.error(`[API Connection Refused] ${error.config?.method?.toUpperCase()} ${error.config?.url} - Cannot connect to ${error.config?.baseURL}`);
+    } else {
+      console.error(`[API Error] ${error.config?.method?.toUpperCase()} ${error.config?.url}`, {
+        message: error.message,
+        code: error.code,
+        status: error.response?.status,
+      });
+    }
+    return Promise.reject(error);
+  }
+);
 
 
 function extractErrorMessage(error: unknown, fallback: string): string {

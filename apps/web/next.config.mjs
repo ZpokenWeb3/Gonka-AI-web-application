@@ -10,11 +10,8 @@ const nextConfig = {
 
   generateEtags: false,
 
-  // ❗ trailingSlash лучше убрать для standalone
-  // trailingSlash: true,
 
   webpack: (config, { isServer }) => {
-    // если реально нужен — можно оставить
     config.module.rules.push({
       test: /node_modules\/.*\/test\/.*\.(js|mjs)$/,
       type: "javascript/auto",

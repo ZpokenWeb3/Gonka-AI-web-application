@@ -27,15 +27,12 @@ FROM node:20-alpine AS production
 
 WORKDIR /app
 
-RUN npm install -g pnpm
-
-# Copy built output
+# Copy built output and dependencies
 COPY --from=builder /app/apps/backend/dist ./apps/backend/dist
 COPY --from=builder /app/apps/backend/prisma ./apps/backend/prisma
-
-# Copy node_modules
 COPY --from=builder /app/node_modules ./node_modules
+COPY --from=builder /app/apps/backend/node_modules ./apps/backend/node_modules
 
 EXPOSE 5000
 
-CMD ["node", "apps/backend/dist/server.js"]
+CMD ["sh", "-c", "cd /app/apps/backend && export DATABASE_URL=\"${DATABASE_URL:-postgresql://user:password@postgres:5432/gonka_db}\" && npx prisma migrate deploy || echo '⚠ Prisma migrate failed, starting server anyway'; node dist/src/server.js"]

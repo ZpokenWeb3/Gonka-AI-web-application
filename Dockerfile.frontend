@@ -1,23 +1,44 @@
+# -----------------
+# Builder stage
 FROM node:20-alpine AS builder
 
 RUN npm install -g pnpm
 
-WORKDIR /app
+# Принимаем build args для переменных окружения
+ARG NEXT_PUBLIC_API_BASE_URL=http://backend:5000
 
+WORKDIR /app
 COPY . .
 
 RUN pnpm install --frozen-lockfile
 
-RUN pnpm --filter web run build
+WORKDIR /app/apps/web
+# Устанавливаем переменные окружения для сборки
+ENV NEXT_PUBLIC_API_BASE_URL=$NEXT_PUBLIC_API_BASE_URL
+RUN pnpm run build
 
-
+# -----------------
+# Production stage
 FROM node:20-alpine AS production
 
 WORKDIR /app
 
+# В монорепо Next.js standalone создаёт структуру apps/web/.next/standalone/apps/web/
+# Копируем всю standalone структуру
 COPY --from=builder /app/apps/web/.next/standalone ./
-COPY --from=builder /app/apps/web/.next/static ./.next/static
-COPY --from=builder /app/apps/web/public ./public
+
+# Копируем static файлы - они должны быть в apps/web/.next/static относительно server.js
+# Если server.js в apps/web/, то static должен быть в apps/web/.next/static
+COPY --from=builder /app/apps/web/.next/static ./apps/web/.next/static
+
+# Копируем public
+COPY --from=builder /app/apps/web/public ./apps/web/public
+
+ENV NODE_ENV=production
+ENV PORT=3000
 
 EXPOSE 3000
-CMD ["node", "server.js"]
+
+# Запускаем server.js из правильного места
+# В standalone режиме для монорепо server.js обычно в apps/web/server.js
+CMD ["node", "apps/web/server.js"]

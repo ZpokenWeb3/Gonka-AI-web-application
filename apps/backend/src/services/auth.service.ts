@@ -4,28 +4,50 @@ import { prisma } from "../config/database";
 import { signToken } from "../utils/jwt";
 
 export const generateNonce = async (walletAddress: string) => {
-    const existingUser = await prisma.user.findUnique({
-        where: { walletAddress: walletAddress.toLowerCase() },
-    });
+    const startTime = Date.now();
+    try {
+        console.log(`[generateNonce] Starting for address: ${walletAddress.toLowerCase()}`);
+        
+        const existingUser = await prisma.user.findUnique({
+            where: { walletAddress: walletAddress.toLowerCase() },
+        });
 
-    if (existingUser?.authNonce) {
-        return existingUser.authNonce;
-    }
+        const findTime = Date.now() - startTime;
+        console.log(`[generateNonce] Find user took: ${findTime}ms`);
 
-    const nonce = `Sign this message to login: ${crypto.randomUUID()}`;
-
-    await prisma.user.upsert({
-        where: { walletAddress: walletAddress.toLowerCase() },
-        update: { authNonce: nonce },
-        create: {
-            walletAddress: walletAddress.toLowerCase(),
-            walletChain: "ETHEREUM",
-            authNonce: nonce,
-            depositAddress: walletAddress.toLowerCase(),
+        if (existingUser?.authNonce) {
+            console.log(`[generateNonce] Returning existing nonce`);
+            return existingUser.authNonce;
         }
-    });
 
-    return nonce;
+        const nonce = `Sign this message to login: ${crypto.randomUUID()}`;
+        const upsertStartTime = Date.now();
+
+        await prisma.user.upsert({
+            where: { walletAddress: walletAddress.toLowerCase() },
+            update: { authNonce: nonce },
+            create: {
+                walletAddress: walletAddress.toLowerCase(),
+                walletChain: "ETHEREUM",
+                authNonce: nonce,
+                depositAddress: walletAddress.toLowerCase(),
+            }
+        });
+
+        const upsertTime = Date.now() - upsertStartTime;
+        const totalTime = Date.now() - startTime;
+        console.log(`[generateNonce] Upsert took: ${upsertTime}ms, Total: ${totalTime}ms`);
+
+        return nonce;
+    } catch (error) {
+        const totalTime = Date.now() - startTime;
+        console.error(`[generateNonce] Error after ${totalTime}ms:`, error);
+        if (error instanceof Error) {
+            console.error("Error message:", error.message);
+            console.error("Error stack:", error.stack);
+        }
+        throw error;
+    }
 }
 
 export const verify = async (walletAddress: string, signature: string, nonce: string) => {    

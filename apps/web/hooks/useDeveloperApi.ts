@@ -26,10 +26,9 @@ export function useDeveloperApi() {
     setCreating(true);
     const newKey = await createApiKey(name);
 
-    // Convert CreateApiKeyResponse to ApiKey
     const apiKey: ApiKey = {
       ...newKey,
-      lastUsedAt: null, // or new Date().toISOString() if you want
+      lastUsedAt: null,
     };
 
     setApiKeys(prev => [apiKey, ...prev]);

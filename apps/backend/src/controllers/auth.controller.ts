@@ -25,7 +25,13 @@ export const getNonce = async (req: Request, res: Response) => {
     
   } catch (err) {
     console.error("Failed to generate nonce", err);
-    return res.status(500).json({ error: "Failed to generate nonce" });
+    const errorMessage = err instanceof Error ? err.message : "Unknown error";
+    const errorStack = err instanceof Error ? err.stack : undefined;
+    console.error("Error details:", { errorMessage, errorStack });
+    return res.status(500).json({ 
+      error: "Failed to generate nonce",
+      details: process.env.NODE_ENV === 'development' ? errorMessage : undefined
+    });
   }
 };
 

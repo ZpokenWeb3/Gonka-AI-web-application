@@ -1,4 +1,22 @@
 services:
+  postgres:
+    image: postgres:15-alpine
+    environment:
+      POSTGRES_USER: user
+      POSTGRES_PASSWORD: password
+      POSTGRES_DB: gonka_db
+    ports:
+      - "5434:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    networks:
+      - gonka-network
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U user"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
   backend:
     build:
       context: .
@@ -6,6 +24,12 @@ services:
     ports:
       - "5000:5000"
     restart: unless-stopped
+    environment:
+      ENCRYPTION_KEY: 4f3c2a1b6d7e8f90123456789abcdef0123456789abcdef0123456789abcdef1
+      DATABASE_URL: postgresql://user:password@postgres:5432/gonka_db
+    depends_on:
+      postgres:
+        condition: service_healthy
     networks:
       - gonka-network
 
@@ -13,9 +37,13 @@ services:
     build:
       context: .
       dockerfile: Dockerfile.frontend
+      args:
+        NEXT_PUBLIC_API_BASE_URL: http://localhost:5000
     ports:
       - "3000:3000"
     restart: unless-stopped
+    environment:
+      NEXT_PUBLIC_API_BASE_URL: http://localhost:5000
     depends_on:
       - backend
     networks:
@@ -24,3 +52,6 @@ services:
 networks:
   gonka-network:
     driver: bridge
+
+volumes:
+  postgres_data:

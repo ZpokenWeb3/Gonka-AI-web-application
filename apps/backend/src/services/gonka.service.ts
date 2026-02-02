@@ -1,14 +1,30 @@
-import { resolveEndpoints, GonkaOpenAI } from 'gonka-openai';
-
 const GONKA_SOURCE_URL = process.env.GONKA_SOURCE_URL?.replace(/\/$/, '');
 const GONKA_PRIVATE_KEY = process.env.GONKA_PRIVATE_KEY;
 
+type GonkaSdk = typeof import('gonka-openai');
+
+let sdkPromise: Promise<GonkaSdk> | null = null;
 let clientPromise: Promise<any> | null = null;
 let endpointsPromise: Promise<any> | null = null;
+
+async function getSdk(): Promise<GonkaSdk> {
+  if (!sdkPromise) {
+    const dynamicImport = new Function(
+      'modulePath',
+      'return import(modulePath);',
+    ) as (modulePath: string) => Promise<GonkaSdk>;
+
+    sdkPromise = dynamicImport('gonka-openai');
+  }
+
+  return sdkPromise;
+}
 
 async function getClient(): Promise<any> {
   if (!clientPromise) {
     clientPromise = (async () => {
+      const { resolveEndpoints, GonkaOpenAI } = await getSdk();
+
       if (!endpointsPromise) {
         endpointsPromise = resolveEndpoints({
           sourceUrl: GONKA_SOURCE_URL,
@@ -49,6 +65,8 @@ export async function gonkaChat(
 
 export async function gonkaGetEndpoints() {
   if (!endpointsPromise) {
+    const { resolveEndpoints } = await getSdk();
+
     endpointsPromise = resolveEndpoints({
       sourceUrl: GONKA_SOURCE_URL,
     });

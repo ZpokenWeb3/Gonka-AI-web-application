@@ -2,6 +2,9 @@ import crypto from "crypto";
 
 const KEY_HEX = process.env.ENCRYPTION_KEY;
 
+console.log('ENCRYPTION_KEY raw:', process.env.ENCRYPTION_KEY);
+console.log('length:', process.env.ENCRYPTION_KEY?.length);
+
 if (!KEY_HEX || KEY_HEX.length !== 64) {
   throw new Error("ENCRYPTION_KEY must be 64 hex chars (32 bytes)");
 }

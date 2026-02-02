@@ -15,10 +15,6 @@ const queryClient = new QueryClient({
   },
 });
 
-console.log('RainbowKitProvider:', RainbowKitProvider)
-console.log('WagmiProvider:', WagmiProvider)
-
-
 export function Providers({ children }: { children: ReactNode }) {
   return (
     <WagmiProvider config={config}>
