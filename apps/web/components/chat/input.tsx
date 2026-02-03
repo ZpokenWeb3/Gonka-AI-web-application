@@ -1,9 +1,11 @@
 'use client'
 
-import { Send } from "lucide-react";
+import {Paperclip, Send} from "lucide-react";
 import { useState } from "react";
 import {useChatStore} from "../../store/useChatStore";
 import { sendGonkaChatMessage } from "../../lib/gonkaClient";
+import {Modal} from "../ui/modal";
+import {AttachForm} from "./attach-form";
 
 interface InputProps {
     chatId?: string;
@@ -11,6 +13,7 @@ interface InputProps {
 
 export const Input = ({ chatId }: InputProps) => {
     const [value, setValue] = useState("");
+    const [isModal, setIsModal] = useState(false);
     const sendMessage = useChatStore((s) => s.sendMessage);
 
     const addAssistantMessage = useChatStore((s) => s.addAssistantMessage);
@@ -37,6 +40,8 @@ export const Input = ({ chatId }: InputProps) => {
 
     return (
         <div className="flex items-center justify-between w-[90%] bg-[#17111c] border border-[#21232C] focus-within:border-[#6B26D9] py-2 px-3 rounded-[12px]">
+            <Paperclip onClick={() => setIsModal(true)} width={18} height={18} className="mr-5 cursor-pointer" color="#ffffff" />
+
             <input
                 placeholder="Enter your message"
                 className="w-full text-sm text-white outline-none bg-transparent"
@@ -52,6 +57,10 @@ export const Input = ({ chatId }: InputProps) => {
             >
                 <Send width={15} height={15} color="#fff" />
             </button>
+
+            {isModal && (
+                <Modal isOpen={isModal} onClose={() => setIsModal(false)} form={ <AttachForm/> }/>
+            )}
         </div>
     );
 };

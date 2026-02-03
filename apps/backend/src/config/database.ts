@@ -23,8 +23,7 @@ class DatabaseService {
         try {
             await prisma.$connect();
             console.log('Database connected successfully');
-            
-            // Проверяем подключение простым запросом
+
             await prisma.$queryRaw`SELECT 1`;
             console.log('Database connection verified');
         } catch (error) {

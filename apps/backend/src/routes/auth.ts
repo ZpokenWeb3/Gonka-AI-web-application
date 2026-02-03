@@ -2,9 +2,9 @@ import { Router } from "express";
 import { z } from "zod";
 import { randomUUID } from "crypto";
 import { ethers } from "ethers";
-import jwt from "jsonwebtoken";
 import { prisma } from "../config/database";
 import { WalletChain } from "@prisma/client";
+import { signToken } from "../utils/jwt";
 
 const router = Router();
 
@@ -25,8 +25,6 @@ const verifyRequestSchema = z.object({
   nonce: z.string().min(1),
   signature: z.string().min(1),
 });
-
-const JWT_SECRET = process.env.JWT_SECRET || "dev-jwt-secret-change-me";
 
 router.post("/nonce", (req, res) => {
   const parseResult = nonceRequestSchema.safeParse(req.body);
@@ -83,15 +81,11 @@ router.post("/verify", async (req, res) => {
       },
     });
 
-    const token = jwt.sign(
-        {
-          sub: user.id,
-          userId: user.id,
-          walletAddress: normalizedAddress,
-        },
-        JWT_SECRET,
-        { expiresIn: "1h" },
-    );
+    const token = signToken({
+      sub: user.id,
+      userId: user.id,
+      walletAddress: normalizedAddress,
+    });
 
     return res.json({ token });
   } catch (err) {

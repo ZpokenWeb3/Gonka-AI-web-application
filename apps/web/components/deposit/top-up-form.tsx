@@ -1,5 +1,6 @@
 import { ArrowDownToLine, CircleDollarSign, CreditCard, Lightbulb, MoveRight, RefreshCcw, Shuffle } from "lucide-react"
 import { Button } from "../ui/button"
+import Link from "next/link";
 
 export const TopUpForm = () => {
     return (
@@ -24,18 +25,20 @@ export const TopUpForm = () => {
                     </div>
                    <MoveRight color="#ffffff" />
                 </Button>
-                <Button className="flex items-center justify-between h-fit py-3" variant="destructive">
-                    <div className="flex items-center gap-4">
-                        <div className="flex items-center justify-center bg-[#6B26D9] w-10 h-10 rounded-sm">
-                            <Shuffle color="#c9c9c9"/>
+                <Link href="/bridge">
+                    <Button className="flex items-center justify-between h-fit py-3" variant="destructive">
+                        <div className="flex items-center gap-4">
+                            <div className="flex items-center justify-center bg-[#6B26D9] w-10 h-10 rounded-sm">
+                                <Shuffle color="#c9c9c9"/>
+                            </div>
+                            <div className="flex flex-col items-start">
+                                <h4 className="text-[16px] text-white font-semibold">Bridge from Ethereum</h4>
+                                <p className="text-[12px] font-light text-gray-400">Move GNK from ETH mainnet • ~15 min</p>
+                            </div>
                         </div>
-                        <div className="flex flex-col items-start">
-                            <h4 className="text-[16px] text-white font-semibold">Bridge from Ethereum</h4>
-                            <p className="text-[12px] font-light text-gray-400">Move GNK from ETH mainnet • ~15 min</p>
-                        </div>
-                    </div>
-                   <MoveRight color="#ffffff" />
-                </Button>
+                        <MoveRight color="#ffffff" />
+                    </Button>
+                </Link>
                 <Button className="flex items-center justify-between h-fit py-3" variant="destructive">
                     <div className="flex items-center gap-4">
                         <div className="flex items-center justify-center bg-[#6B26D9] w-10 h-10 rounded-sm">

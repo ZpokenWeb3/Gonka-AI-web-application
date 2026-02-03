@@ -6,6 +6,7 @@ import { Navbar } from "../components/navbar/navbar";
 import { Header } from "../components/header";
 import Transition from "../components/ui/transition";
 import "../lib/polyfills";
+import "@rainbow-me/rainbowkit/styles.css";
 
 const Providers = dynamic(
   () => import("./providers").then((m) => m.Providers),
@@ -38,9 +39,11 @@ export default function RootLayout({
         <Providers>
           <div className="flex relative w-full h-screen overflow-hidden">
             <Navbar />
-            <div className="flex flex-col w-full h-screen overflow-hidden">
+            <div className="flex flex-col w-full h-screen min-h-0 overflow-hidden">
               <Header />
-              <Transition>{children}</Transition>
+              <div className="flex-1 min-h-0">
+                <Transition>{children}</Transition>
+              </div>
             </div>
           </div>
         </Providers>
