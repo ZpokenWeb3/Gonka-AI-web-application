@@ -14,7 +14,7 @@ export const ConnectButtonWallet = ({ onConnect }: { onConnect?: (address: strin
     const connectLeap = async () => {
         const anyWindow = window as any;
         if (!anyWindow.leap) {
-            setConnectionError("Leap Wallet не установлен. Пожалуйста, установите расширение Leap Wallet.");
+            setConnectionError("Leap Wallet is not installed. Please install the Leap Wallet extension.");
             return;
         }
 
@@ -68,7 +68,7 @@ export const ConnectButtonWallet = ({ onConnect }: { onConnect?: (address: strin
             try {
                 await anyWindow.leap.enable("gonka-mainnet");
             } catch (enableError: any) {
-                if (enableError?.message?.includes("not found") || 
+                if (enableError?.message?.includes("not found") ||
                     enableError?.message?.includes("not available") ||
                     enableError?.code === 4902 ||
                     enableError?.message?.includes("chain") ||
@@ -105,22 +105,21 @@ export const ConnectButtonWallet = ({ onConnect }: { onConnect?: (address: strin
                             console.warn("request suggestChain failed:", requestError);
                         }
                     }
-                    
+
                     if (chainAdded) {
                         await new Promise(resolve => setTimeout(resolve, 1000));
                         await anyWindow.leap.enable("gonka-mainnet");
                     } else {
-
                         throw new Error(
-                            "Сеть gonka-mainnet не найдена в вашем кошельке. " +
-                            "Пожалуйста, добавьте сеть вручную в настройках Leap Wallet:\n\n" +
-                            "1. Откройте настройки Leap Wallet\n" +
-                            "2. Перейдите в раздел 'Сети' или 'Networks'\n" +
-                            "3. Добавьте новую сеть со следующими параметрами:\n" +
+                            "Gonka-mainnet network not found in your wallet. " +
+                            "Please add the network manually in Leap Wallet settings:\n\n" +
+                            "1. Open Leap Wallet settings\n" +
+                            "2. Go to 'Networks'\n" +
+                            "3. Add a new network with the following parameters:\n" +
                             `   - Chain ID: ${gonkaChainInfo.chainId}\n` +
                             `   - RPC: ${gonkaChainInfo.rpc}\n` +
                             `   - REST: ${gonkaChainInfo.rest}\n\n` +
-                            "Или обновите Leap Wallet до последней версии для автоматического добавления сети."
+                            "Or update Leap Wallet to the latest version for automatic network addition."
                         );
                     }
                 } else {
@@ -130,9 +129,9 @@ export const ConnectButtonWallet = ({ onConnect }: { onConnect?: (address: strin
 
             const offlineSigner = anyWindow.leap.getOfflineSigner("gonka-mainnet");
             const accounts = await offlineSigner.getAccounts();
-            
+
             if (!accounts || accounts.length === 0) {
-                setConnectionError("Не найдено аккаунтов в кошельке. Пожалуйста, создайте или импортируйте аккаунт.");
+                setConnectionError("No accounts found in wallet. Please create or import an account.");
                 return;
             }
 
@@ -145,18 +144,18 @@ export const ConnectButtonWallet = ({ onConnect }: { onConnect?: (address: strin
         } catch (err: any) {
             console.error("Leap connect error:", err);
 
-            let errorMessage = "Ошибка подключения кошелька";
-            
+            let errorMessage = "Wallet connection error";
+
             if (err?.message) {
                 if (err.message.includes("rejected") || err.message.includes("User rejected")) {
-                    errorMessage = "Подключение отклонено пользователем";
+                    errorMessage = "Connection rejected by user";
                 } else if (err.message.includes("not found") || err.message.includes("not available")) {
-                    errorMessage = "Сеть gonka-mainnet не найдена. Добавьте сеть в настройках кошелька.";
+                    errorMessage = "Gonka-mainnet network not found. Add it in your wallet settings.";
                 } else {
                     errorMessage = err.message;
                 }
             }
-            
+
             setConnectionError(errorMessage);
         } finally {
             setIsConnecting(false);
@@ -177,12 +176,12 @@ export const ConnectButtonWallet = ({ onConnect }: { onConnect?: (address: strin
             >
                 <Wallet size={16} />
                 {isAuthenticating
-                    ? "Авторизация..."
+                    ? "Authenticating..."
                     : isConnecting
-                        ? "Подключение..."
+                        ? "Connecting..."
                         : address
                             ? `${address.slice(0, 6)}...${address.slice(-4)}`
-                            : "Подключить Leap Wallet"}
+                            : "Connect Leap Wallet"}
             </button>
 
             {connectionError && (
@@ -194,7 +193,7 @@ export const ConnectButtonWallet = ({ onConnect }: { onConnect?: (address: strin
                             onClick={() => setConnectionError(null)}
                             className="text-xs text-red-300 underline hover:text-red-200 self-start"
                         >
-                            Закрыть
+                            Close
                         </button>
                     </div>
                 </div>
@@ -208,7 +207,7 @@ export const ConnectButtonWallet = ({ onConnect }: { onConnect?: (address: strin
                         onClick={() => address && authenticate(address)}
                         className="text-xs text-red-300 underline hover:text-red-200 whitespace-nowrap"
                     >
-                        Повторить
+                        Retry
                     </button>
                 </div>
             )}
