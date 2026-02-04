@@ -5,6 +5,7 @@ import { darkTheme, RainbowKitProvider } from "@rainbow-me/rainbowkit";
 import { WagmiProvider } from "wagmi";
 import { config } from "../lib/wagmi";
 import type { ReactNode } from "react";
+import {GonkaProvider} from "../providers/gonka-provider";
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -26,7 +27,9 @@ export function Providers({ children }: { children: ReactNode }) {
             borderRadius: 'medium',
           })}
         >
-          {children}
+            <GonkaProvider>
+                {children}
+            </GonkaProvider>
         </RainbowKitProvider>
       </QueryClientProvider>
     </WagmiProvider>

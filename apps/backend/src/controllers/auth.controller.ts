@@ -55,7 +55,14 @@ export const verifySignature = async (req: Request, res: Response) => {
     return res.json({ token });
   } catch (err) {
     console.error("Failed to verify wallet signature", err);
-    return res.status(400).json({ error: "Invalid signature" });
+
+    const message =
+      err instanceof Error ? err.message : "Unknown verification error";
+
+    return res.status(400).json({
+      error: "Invalid signature",
+      details: process.env.NODE_ENV === "development" ? message : undefined,
+    });
   }
 };
 

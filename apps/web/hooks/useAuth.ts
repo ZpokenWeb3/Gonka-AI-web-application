@@ -57,18 +57,47 @@ export function useAuth(): UseAuthReturn {
                 const { nonce } = await getNonce(walletAddress);
 
                 let signature: string;
-                try {
-                    signature = await signMessageAsync({
-                        message: nonce,
-                    });
-                } catch (signError) {
-                    if (signError instanceof Error) {
-                        if (signError.message.includes("User rejected")) {
-                            throw new Error("Signature rejected by user");
+
+                // Если доступен Leap, используем модальное окно Leap для подписи nonce
+                const anyWindow = typeof window !== "undefined" ? (window as any) : null;
+                if (anyWindow?.leap) {
+                    try {
+                        const chainId = "gonka-mainnet";
+                        const signed = await anyWindow.leap.signArbitrary(
+                            chainId,
+                            walletAddress,
+                            nonce
+                        );
+
+                        // У Leap, как и у Keplr, ответ обычно содержит поле signature
+                        signature = signed?.signature ?? signed;
+                        if (!signature || typeof signature !== "string") {
+                            throw new Error("Invalid signature from Leap wallet");
                         }
-                        throw new Error(`Failed to sign message: ${signError.message}`);
+                    } catch (signError) {
+                        if (signError instanceof Error) {
+                            if (signError.message.includes("rejected")) {
+                                throw new Error("Signature rejected by user");
+                            }
+                            throw new Error(`Failed to sign message with Leap: ${signError.message}`);
+                        }
+                        throw new Error("Failed to sign message with Leap");
                     }
-                    throw new Error("Failed to sign message");
+                } else {
+                    // Fallback на wagmi (EVM-кошельки, MetaMask и т.п.)
+                    try {
+                        signature = await signMessageAsync({
+                            message: nonce,
+                        });
+                    } catch (signError) {
+                        if (signError instanceof Error) {
+                            if (signError.message.includes("User rejected")) {
+                                throw new Error("Signature rejected by user");
+                            }
+                            throw new Error(`Failed to sign message: ${signError.message}`);
+                        }
+                        throw new Error("Failed to sign message");
+                    }
                 }
 
                 const { token } = await verifyWallet({
