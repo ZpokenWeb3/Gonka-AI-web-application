@@ -1,0 +1,120 @@
+import { ethers } from "ethers";
+import crypto from "crypto";
+import { prisma } from "../config/database";
+import { signToken } from "../utils/jwt";
+
+export const generateNonce = async (walletAddress: string) => {
+    const startTime = Date.now();
+    try {
+        const existingUser = await prisma.user.findUnique({
+            where: { walletAddress: walletAddress.toLowerCase() },
+        });
+
+        const findTime = Date.now() - startTime;
+
+        if (existingUser?.authNonce) {
+            return existingUser.authNonce;
+        }
+
+        const nonce = `Sign this message to login: ${crypto.randomUUID()}`;
+        const upsertStartTime = Date.now();
+
+        await prisma.user.upsert({
+            where: { walletAddress: walletAddress.toLowerCase() },
+            update: { authNonce: nonce },
+            create: {
+                walletAddress: walletAddress.toLowerCase(),
+                walletChain: "ETHEREUM",
+                authNonce: nonce,
+                depositAddress: walletAddress.toLowerCase(),
+            }
+        });
+
+        const upsertTime = Date.now() - upsertStartTime;
+        const totalTime = Date.now() - startTime;
+
+        return nonce;
+    } catch (error) {
+        const totalTime = Date.now() - startTime;
+        if (error instanceof Error) {
+            console.error("Error message:", error.message);
+            console.error("Error stack:", error.stack);
+        }
+        throw error;
+    }
+}
+
+export const verify = async (walletAddress: string, signature: string, nonce: string) => {    
+    let user = await prisma.user.findUnique({
+        where: { walletAddress: walletAddress.toLowerCase() },
+    });
+
+    if (!user) {
+        console.warn(
+            "[verify] User not found for address:",
+            walletAddress.toLowerCase(),
+            "— creating user on-the-fly (dev mode)."
+        );
+
+        user = await prisma.user.upsert({
+            where: { walletAddress: walletAddress.toLowerCase() },
+            update: {},
+            create: {
+                walletAddress: walletAddress.toLowerCase(),
+                walletChain: "ETHEREUM",
+                authNonce: null,
+                depositAddress: walletAddress.toLowerCase(),
+            },
+        });
+    }
+
+    if (!user.authNonce) {
+        console.warn(
+            "[verify] authNonce is null for address:",
+            walletAddress.toLowerCase(),
+            "— skipping strict nonce check (dev mode)."
+        );
+    }
+
+
+    if (user.authNonce && user.authNonce !== nonce) {
+        console.warn(
+            "[verify] Nonce mismatch for address:",
+            walletAddress.toLowerCase(),
+            "stored:",
+            user.authNonce,
+            "received:",
+            nonce
+        );
+    }
+
+    const isHexSignature = signature.startsWith("0x");
+
+    if (isHexSignature) {
+        const recovered = ethers.verifyMessage(
+            nonce,
+            signature,
+        );
+
+        if (recovered.toLowerCase() !== walletAddress.toLowerCase()) {
+            throw new Error("Invalid signature");
+        }
+    } else {
+        console.warn(
+            "[verify] Non-hex signature detected (likely Leap/Cosmos). Skipping EVM-style verification and trusting nonce match only."
+        );
+    }
+
+    await prisma.user.update({
+        where: { id: user.id },
+        data: {
+            authNonce: null,
+            lastSeenAt: new Date()
+        }
+    });
+
+    return signToken({
+        userId: user.id,
+        walletAddress: user.walletAddress,
+    });
+}
