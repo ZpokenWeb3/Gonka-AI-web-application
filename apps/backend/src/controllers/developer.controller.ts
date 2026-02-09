@@ -24,7 +24,7 @@ export const createKey = async(req: Request, res: Response) => {
             return res.status(401).json({ error: "Unauthorized" });
         }
 
-        const { name } = req.body;
+        const { name, rateLimitPerMinute, rateLimitPerDay, monthlySpendLimit } = req.body;
 
         if (!name || typeof name !== 'string') {
             return res.status(400).json({ error: "Name is required and must be a string" });
@@ -34,7 +34,7 @@ export const createKey = async(req: Request, res: Response) => {
         const keyPrefix = fullKey.slice(0, 6);
         const keyHash = crypto.createHash('sha256').update(fullKey).digest('hex');
 
-        const apiKey = await createApiKey(userId, name, keyPrefix, keyHash);
+        const apiKey = await createApiKey(userId, name, keyPrefix, keyHash, rateLimitPerMinute, rateLimitPerDay, monthlySpendLimit);
 
         return res.status(201).json({
             success: true,
@@ -42,7 +42,10 @@ export const createKey = async(req: Request, res: Response) => {
                 id: apiKey.id,
                 name: apiKey.name,
                 keyPrefix: apiKey.keyPrefix,
-                fullKey: fullKey, 
+                fullKey: fullKey,
+                rateLimitPerMinute: apiKey.rateLimitPerMinute,
+                rateLimitPerDay: apiKey.rateLimitPerDay,
+                monthlySpendLimit: apiKey.monthlySpendLimit,
                 createdAt: apiKey.createdAt,
                 isActive: apiKey.isActive
             }

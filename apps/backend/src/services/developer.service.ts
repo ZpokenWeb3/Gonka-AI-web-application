@@ -2,13 +2,16 @@ import { ApiKey, PrismaClient } from "@prisma/client";
 
 const prisma = new PrismaClient();
 
-export const createApiKey = async(userId: string, name: string, keyPrefix: string, keyHash: string): Promise<ApiKey> => {
+export const createApiKey = async(userId: string, name: string, keyPrefix: string, keyHash: string, rateLimitPerMinute: number, rateLimitPerDay: number, monthlySpendLimit: number): Promise<ApiKey> => {
     const apiKey = await prisma.apiKey.create({
         data: {
             userId,
             name,
             keyPrefix,
-            keyHash
+            keyHash,
+            rateLimitPerMinute,
+            rateLimitPerDay,
+            monthlySpendLimit
         }
     })
 

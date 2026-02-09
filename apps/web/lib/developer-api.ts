@@ -65,13 +65,26 @@ export interface CreateApiKeyResponse {
   name: string;
   keyPrefix: string;
   fullKey: string;
+  rateLimitPerMinute?: number | null;
+  rateLimitPerDay?: number | null;
+  monthlySpendLimit?: number | null;
   createdAt: string;
   isActive: boolean;
 }
 
-export async function createApiKey(name: string): Promise<CreateApiKeyResponse> {
+export interface CreateApiKeyRequest {
+  name: string;
+  rateLimitPerMinute?: number;
+  rateLimitPerDay?: number;
+  monthlySpendLimit?: number;
+}
+
+export async function createApiKey(payload: CreateApiKeyRequest): Promise<CreateApiKeyResponse> {
   try {
-    const { data } = await apiClient.post<{success: boolean; data: CreateApiKeyResponse}>("/developer/keys", { name });
+    const { data } = await apiClient.post<{success: boolean; data: CreateApiKeyResponse}>(
+      "/developer/keys",
+      payload
+    );
     
     if (!data.success || !data.data) {
       throw new Error("Invalid response structure");

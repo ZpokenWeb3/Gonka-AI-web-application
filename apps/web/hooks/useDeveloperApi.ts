@@ -1,7 +1,14 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { createApiKey, getApiKeys, deleteApiKey, ApiKey, CreateApiKeyResponse } from "../lib/developer-api";
+import {
+  createApiKey,
+  getApiKeys,
+  deleteApiKey,
+  ApiKey,
+  CreateApiKeyResponse,
+  CreateApiKeyRequest,
+} from "../lib/developer-api";
 
 export function useDeveloperApi() {
   const [apiKeys, setApiKeys] = useState<ApiKey[]>([]);
@@ -21,32 +28,33 @@ export function useDeveloperApi() {
     }
   };
 
-  const createNewApiKey = async (name: string): Promise<CreateApiKeyResponse> => {
-  try {
-    setCreating(true);
-    const newKey = await createApiKey(name);
+  const createNewApiKey = async (
+    payload: CreateApiKeyRequest
+  ): Promise<CreateApiKeyResponse> => {
+    try {
+      setCreating(true);
+      const newKey = await createApiKey(payload);
 
-    const apiKey: ApiKey = {
-      ...newKey,
-      lastUsedAt: null,
-    };
+      const apiKey: ApiKey = {
+        ...newKey,
+        lastUsedAt: null,
+      };
 
-    setApiKeys(prev => [apiKey, ...prev]);
-    return newKey;
-  } catch (error) {
-    console.error("Failed to create API key:", error);
-    throw error;
-  } finally {
-    setCreating(false);
-  }
-};
-
+      setApiKeys((prev) => [apiKey, ...prev]);
+      return newKey;
+    } catch (error) {
+      console.error("Failed to create API key:", error);
+      throw error;
+    } finally {
+      setCreating(false);
+    }
+  };
 
   const deleteApiKeyById = async (keyId: string): Promise<void> => {
     try {
       setDeleting(keyId);
       await deleteApiKey(keyId);
-      setApiKeys(prev => prev.filter(key => key.id !== keyId));
+      setApiKeys((prev) => prev.filter((key) => key.id !== keyId));
     } catch (error) {
       console.error("Failed to delete API key:", error);
       throw error;

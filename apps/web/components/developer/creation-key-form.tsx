@@ -2,28 +2,51 @@ import { useState } from "react";
 import { Button } from "../ui/button";
 import { Copy, TriangleAlert } from "lucide-react";
 import { showCustomToast } from "../ui/custom-toast";
+import type { CreateApiKeyRequest } from "../../lib/developer-api";
 
 interface Props {
   onClose: () => void;
-  onCreateKey: (name: string) => Promise<{ fullKey: string }>;
+  onCreateKey: (payload: CreateApiKeyRequest) => Promise<{ fullKey: string }>;
 }
 
 export const CreationKeyForm: React.FC<Props> = ({ onClose, onCreateKey }) => {
   const [keyName, setKeyName] = useState("");
   const [createdKey, setCreatedKey] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
-  const [limitType, setLimitType] = useState<'unlimited' | 'limited'>('unlimited');
-  const [monthlyLimit, setMonthlyLimit] = useState('');
-  const [perDay, setPerDay] = useState('');
-  const [perMinute, setPerMinute] = useState('');
-
+  const [limitType, setLimitType] = useState<"unlimited" | "limited">(
+    "unlimited"
+  );
+  const [monthlyLimit, setMonthlyLimit] = useState("");
+  const [perDay, setPerDay] = useState("");
+  const [perMinute, setPerMinute] = useState("");
 
   const handleCreateKey = async () => {
-    if (!keyName.trim()) return;
+    const trimmedName = keyName.trim();
+    if (!trimmedName) return;
+
+    const rateLimitPerMinute =
+      perMinute.trim() && !Number.isNaN(Number(perMinute))
+        ? Number(perMinute)
+        : undefined;
+
+    const rateLimitPerDay =
+      perDay.trim() && !Number.isNaN(Number(perDay)) ? Number(perDay) : undefined;
+
+    const monthlySpendLimit =
+      limitType === "limited" &&
+      monthlyLimit.trim() &&
+      !Number.isNaN(Number(monthlyLimit))
+        ? Number(monthlyLimit)
+        : undefined;
 
     try {
       setLoading(true);
-      const result = await onCreateKey(keyName);
+      const result = await onCreateKey({
+        name: trimmedName,
+        rateLimitPerMinute,
+        rateLimitPerDay,
+        monthlySpendLimit,
+      });
       setCreatedKey(result.fullKey);
     } catch (error) {
       console.error("Failed to create API key:", error);
