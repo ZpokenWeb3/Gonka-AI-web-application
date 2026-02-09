@@ -52,6 +52,20 @@ export type GetChatResponse = {
     message?: string;
 };
 
+export type UpdateChatRequest = {
+    id: string;
+    isPinned: boolean;
+    title: string;
+};
+
+export type UpdateChatResponse = {
+    success: boolean;
+    data: {
+        count: number;
+    };
+    message?: string;
+};
+
 const apiClient = axios.create({
     baseURL: API_BASE_URL,
     headers: {
@@ -163,6 +177,32 @@ export async function deleteChat(id: string): Promise<{ success: boolean }> {
         return data;
     } catch (error) {
         const message = extractErrorMessage(error, "Failed to delete chat");
+        throw new Error(message);
+    }
+}
+
+export async function updateChat({
+    id,
+    isPinned,
+    title,
+}: UpdateChatRequest): Promise<UpdateChatResponse> {
+    if (!id || typeof id !== "string") {
+        throw new Error("Chat ID is required");
+    }
+
+    try {
+        const { data } = await apiClient.patch<UpdateChatResponse>(`/chats/${id}/update`, {
+            isPinned,
+            title,
+        });
+
+        if (!data?.success) {
+            throw new Error(data?.message || "Failed to update chat");
+        }
+
+        return data;
+    } catch (error) {
+        const message = extractErrorMessage(error, "Failed to update chat");
         throw new Error(message);
     }
 }

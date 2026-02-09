@@ -1,5 +1,11 @@
 import { Request, Response } from "express";
-import { createChat as createChatService, deleteChatById, getChatById, getUserChats } from "../services/chat.service";
+import {
+    createChat as createChatService,
+    deleteChatById,
+    getChatById,
+    getUserChats,
+    updateChatInfo
+} from "../services/chat.service";
 import { sendMessageAndGetResponse } from "../services/message.service";
 
 declare global {
@@ -162,4 +168,41 @@ export const sendMessage = async (req: Request, res: Response) => {
         });
     }
 }
+
+export const updateChat = async (req: Request, res: Response) => {
+    try {
+        const userId = req.userId!;
+        const { id } = req.params;
+        const { isPinned, title } = req.body;
+
+        if (typeof isPinned !== "boolean" || typeof title !== "string") {
+            return res.status(400).json({
+                success: false,
+                message: "Invalid data format",
+            });
+        }
+
+        const chat = await updateChatInfo(id, userId, isPinned, title);
+
+        if (!chat) {
+            return res.status(404).json({
+                success: false,
+                message: "Chat not found or access denied",
+            });
+        }
+
+        return res.json({
+            success: true,
+            data: chat,
+        });
+    } catch (error) {
+        console.error("Failed to update chat:", error);
+
+        return res.status(500).json({
+            success: false,
+            message: "Failed to update chat",
+        });
+    }
+};
+
 

@@ -99,3 +99,26 @@ export const deleteChatById = async (chatId: string, userId: string) => {
         where: { id: chatId }
     });
 }
+
+export const updateChatInfo = async (
+    chatId: string,
+    userId: string,
+    isPinned: boolean,
+    title: string
+) => {
+    const result = await prisma.chatSession.updateMany({
+        where: {
+            id: chatId,
+            userId,
+        },
+        data: {
+            title,
+            isPinned,
+        },
+    });
+
+    if (result.count === 0) return null;
+
+    return result;
+};
+
