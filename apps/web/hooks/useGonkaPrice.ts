@@ -52,7 +52,6 @@ export function useGonkaPrice(): UseGonkaPriceResult {
 
     fetchPrice();
 
-    // периодическое обновление раз в минуту
     const intervalId = setInterval(fetchPrice, 60_000);
 
     return () => {

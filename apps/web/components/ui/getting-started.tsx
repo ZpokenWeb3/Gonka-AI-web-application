@@ -1,28 +1,33 @@
-'use client'
+ 'use client'
 
 import { ChevronUp } from "lucide-react"
 import { useState } from "react"
-import { useAccount } from "wagmi"
-import { useRouter } from "next/navigation"
-import { useCreateChat } from "../../hooks/useChats"
 import { ChecklistItem } from "../chat/checklist-item"
+import { useChats } from "../../hooks/useChats"
+import { hasModelCookie } from "../../lib/auth"
+import { useGonka } from "../../providers/gonka-provider"
 
 export const GettingStarted = () => {
     const [isOpen, setOpen] = useState(true)
 
-    const { isConnected } = useAccount();
-    
-    const walletConnected = isConnected;
-    const hasFunds = false; 
-    const sentFirstMessage = false; 
-    const triedAnotherModel = false;
+    const { data: chatsData } = useChats();
+    const { balance } = useGonka();
+    const { address } = useGonka();
+
+    console.log(address)
+
+    const walletConnected = !!address;
+    const hasFunds = balance > 0;
+    const sentFirstMessage =
+        !!chatsData?.data?.some((chat) => chat.messages && chat.messages.length > 0);
+    const triedAnotherModel = hasModelCookie();
 
     return (
         <div className="absolute right-[25px] bottom-[25px] flex flex-col gap-5 w-[280px] text-[14px] text-white cursor-pointer transition-all duration-200 bg-[#09090B] border border-[#232328] p-2 rounded-[15px]">
             <div className="flex items-center justify-between">
                 <div className="flex items-center gap-1">
                     <div className={`w-1 h-1 ${walletConnected ? 'bg-[#6B26D9]' : 'bg-[#b3b3b3]'} rounded-full`}/>
-                    <div className="w-1 h-1 bg-[#b3b3b3] rounded-full"/>
+                    <div className={`w-1 h-1 ${hasFunds ? 'bg-[#6B26D9]' : 'bg-[#b3b3b3]'} rounded-full`}/>
                     <div className="w-1 h-1 bg-[#b3b3b3] rounded-full"/>
                     <div className="w-1 h-1 bg-[#b3b3b3] rounded-full"/>
                 </div>

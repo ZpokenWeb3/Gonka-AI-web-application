@@ -35,7 +35,7 @@ const apiClient = axios.create({
   headers: {
     "Content-Type": "application/json",
   },
-  timeout: 30000, // Увеличено до 30 секунд для диагностики
+  timeout: 30000,
 });
 
 
@@ -301,10 +301,6 @@ export function clearModelCookie(): boolean {
     console.error("Failed to clear model cookie:", error);
     return false;
   }
-}
-
-export function isValidEthereumAddress(address: string): boolean {
-  return /^0x[a-fA-F0-9]{40}$/.test(address);
 }
 
 

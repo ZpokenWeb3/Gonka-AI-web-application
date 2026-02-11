@@ -58,7 +58,6 @@ export function useAuth(): UseAuthReturn {
 
                 let signature: string;
 
-                // Если доступен Leap, используем модальное окно Leap для подписи nonce
                 const anyWindow = typeof window !== "undefined" ? (window as any) : null;
                 if (anyWindow?.leap) {
                     try {
@@ -69,7 +68,6 @@ export function useAuth(): UseAuthReturn {
                             nonce
                         );
 
-                        // У Leap, как и у Keplr, ответ обычно содержит поле signature
                         signature = signed?.signature ?? signed;
                         if (!signature || typeof signature !== "string") {
                             throw new Error("Invalid signature from Leap wallet");
@@ -84,7 +82,6 @@ export function useAuth(): UseAuthReturn {
                         throw new Error("Failed to sign message with Leap");
                     }
                 } else {
-                    // Fallback на wagmi (EVM-кошельки, MetaMask и т.п.)
                     try {
                         signature = await signMessageAsync({
                             message: nonce,

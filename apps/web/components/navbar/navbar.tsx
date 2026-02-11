@@ -1,7 +1,7 @@
 'use client'
 
 import {Button} from "../ui/button";
-import {CircleQuestionMark, KeyRound, Plus} from "lucide-react";
+import {CircleQuestionMark, HatGlasses, KeyRound, Plus} from "lucide-react";
 import {ChatList} from "./chat-list";
 import {Logo} from "../ui/logo";
 import { useCreateChat } from "../../hooks/useChats";
@@ -51,6 +51,14 @@ export const Navbar = () => {
                         <Button variant="default" className="w-[100%]">
                             <CircleQuestionMark width={16} height={16} color="#3F434D"/>
                             Help
+                        </Button>
+                    </Link>
+                </div>
+                <div className="px-2">
+                    <Link href="/turing-twist">
+                        <Button variant="secondary" className="flex items-center gap-2">
+                            Turing Twist
+                            <HatGlasses color="#ffffff"/>
                         </Button>
                     </Link>
                 </div>

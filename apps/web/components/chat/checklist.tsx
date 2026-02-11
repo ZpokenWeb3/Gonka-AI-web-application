@@ -1,17 +1,20 @@
-import { useAccount } from "wagmi";
 import { ChecklistItem } from "./checklist-item";
+import {useChats} from "../../hooks/useChats";
+import {useGonka} from "../../providers/gonka-provider";
+import {hasModelCookie} from "../../lib/auth";
 
 export const Checklist = () => {
-  const { address, isConnected } = useAccount();
+    const { data: chatsData } = useChats();
+    const { balance } = useGonka();
+    const { address } = useGonka();
 
-  console.log(isConnected)
+    console.log(address)
 
-  const walletConnected = isConnected;
-  const hasFunds = false; 
-  const sentFirstMessage = false; 
-  const triedAnotherModel = false;
-
-
+    const walletConnected = !!address;
+    const hasFunds = balance > 0;
+    const sentFirstMessage =
+        !!chatsData?.data?.some((chat) => chat.messages && chat.messages.length > 0);
+    const triedAnotherModel = hasModelCookie();
 
   return (
     <div className="flex flex-col gap-3 bg-[#151518] border border-[#232328] 2xl:p-4 p-3 2xl:rounded-[25px] rounded-[18px]">
