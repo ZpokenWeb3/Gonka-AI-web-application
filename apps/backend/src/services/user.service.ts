@@ -27,7 +27,8 @@ export const updateUserProfile = async (
     avatarUrl?: string;
     lowBalanceAlert?: boolean;
     depositNotifications?: boolean;
-    defaultModel?: ChatModel
+    defaultModel?: ChatModel;
+    temperaure: number
   }
 ) => {
   const updateData = {

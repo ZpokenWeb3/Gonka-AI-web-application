@@ -1,5 +1,6 @@
 'use client'
 
+import { useState } from "react";
 import { Settings } from "lucide-react";
 import { SettingsSection } from "../../components/settings/settings-section";
 import { ABOUT_DATA, CHATSETTINGS_DATA, NOTIFICATIONS_DATA } from "../../types/contstants";
@@ -7,9 +8,15 @@ import { SectionTitle } from "../../components/ui/section-title";
 import { useProfile } from "../../hooks/useProfile";
 import { SettingsSkeleton } from "../../components/settings/settings-skeleton";
 import { showCustomToast } from "../../components/ui/custom-toast";
+import { useModelSelection } from "../../hooks/useModelSelection";
+import { Modal } from "../../components/ui/modal";
+import { ModelForm } from "../../components/chat/model-form";
+import {TemperatureForm} from "../../components/settings/temperature-form";
 
 export default function SettingsPage() {
     const { user, loading, updateUserProfile } = useProfile();
+    const { showModelModal, loading: modelLoading, selectModel, setShowModelModal } = useModelSelection();
+    const [showTemperatureModal, setShowTemperatureModal] = useState(false);
 
     const handleLowBalanceChange = async (enabled: boolean) => {
         try {
@@ -48,7 +55,27 @@ export default function SettingsPage() {
         <div className="flex flex-wrap gap-7">
             <div className="flex flex-col gap-3">
                 <SectionTitle text="Chat Settings"/>
-                {loading ? <SettingsSkeleton /> : <SettingsSection data={CHATSETTINGS_DATA(user)}/>}
+                {loading ? (
+                    <SettingsSkeleton />
+                ) : (
+                    <SettingsSection
+                        data={CHATSETTINGS_DATA(user).map((item, index) => {
+                            if (index === 0) {
+                                return {
+                                    ...item,
+                                    onClick: () => setShowModelModal(true),
+                                };
+                            }
+                            if (index === 1) {
+                                return {
+                                    ...item,
+                                    onClick: () => setShowTemperatureModal(true),
+                                };
+                            }
+                            return item;
+                        })}
+                    />
+                )}
             </div>
             <div className="flex flex-col gap-3">
                 <SectionTitle text="Notifications"/>
@@ -59,6 +86,28 @@ export default function SettingsPage() {
                 {loading ? <SettingsSkeleton /> : <SettingsSection data={ABOUT_DATA}/>}
             </div>
         </div>
+        {showModelModal && (
+            <Modal
+                isOpen={showModelModal}
+                onClose={() => setShowModelModal(false)}
+                form={<ModelForm onSelect={selectModel} disabled={modelLoading} />}
+            />
+        )}
+        {showTemperatureModal && (
+            <Modal
+                isOpen={showTemperatureModal}
+                onClose={() => setShowTemperatureModal(false)}
+                form={(
+                    <TemperatureForm
+                        setShowTemperatureModal={setShowTemperatureModal}
+                        temperature={user?.temperaure ?? 0.7}
+                        onUpdateTemperature={async (newTemp: number) => {
+                            await updateUserProfile({ temperaure: newTemp });
+                        }}
+                    />
+                )}
+            />
+        )}
     </div>
   );
 }

@@ -95,10 +95,6 @@ export const verify = async (walletAddress: string, signature: string, nonce: st
         );
     }
 
-    // Поддержка двух типов подписи:
-    // 1) EVM-подпись (hex-строка, начинается с 0x) — проверяем через ethers.verifyMessage
-    // 2) Подпись из Cosmos/Leap (как в signArbitrary, base64-строка без 0x) — пока только логируем и пропускаем проверку адреса
-    //    (для прод-окружения лучше добавить полноценную проверку через cosmjs по pub_key + signature).
     const isHexSignature = signature.startsWith("0x");
 
     if (isHexSignature) {
@@ -114,7 +110,6 @@ export const verify = async (walletAddress: string, signature: string, nonce: st
         console.warn(
             "[verify] Non-hex signature detected (likely Leap/Cosmos). Skipping EVM-style verification and trusting nonce match only."
         );
-        // Здесь можно позже добавить полноценную проверку Cosmos-подписей
     }
 
     await prisma.user.update({

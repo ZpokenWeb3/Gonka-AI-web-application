@@ -10,6 +10,7 @@ interface SettingsData {
     switcher?: boolean
     onSwitchChange?: (enabled: boolean) => void
     initialSwitchState?: boolean
+    onClick?: () => void
 }
 
 interface Props{
@@ -29,6 +30,7 @@ export const SettingsSection:FC<Props> = ({data}) => {
                     switcher={item.switcher}
                     onSwitchChange={item.onSwitchChange}
                     initialSwitchState={item.initialSwitchState}
+                    onClick={item.onClick}
                 />
             ))}
         

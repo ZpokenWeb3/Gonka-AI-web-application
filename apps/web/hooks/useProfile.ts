@@ -26,6 +26,7 @@ export function useProfile() {
     lowBalanceAlert?: boolean;
     depositNotifications?: boolean;
     defaultModel?: "QWEN25" | "QWEN323" | "QWEN332" | "QWENQWQ" | "REDHAT";
+    temperaure?: number;
   }) => {
     try {
       setUpdating(true);

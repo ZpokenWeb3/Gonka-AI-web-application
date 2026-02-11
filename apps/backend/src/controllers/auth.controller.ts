@@ -94,7 +94,7 @@ export const getMe = async (req: Request, res: Response) => {
 export const updateProfile = async (req: Request, res: Response) => {
   try {
     const userId = req.userId;
-    const { displayName, avatarUrl, lowBalanceAlert, depositNotifications, defaultModel } = req.body;
+    const { displayName, avatarUrl, lowBalanceAlert, depositNotifications, defaultModel, temperaure, temperature } = req.body;
 
     if (!userId) {
       return res.status(401).json({ error: "Unauthorized" });
@@ -105,7 +105,8 @@ export const updateProfile = async (req: Request, res: Response) => {
       avatarUrl,
       lowBalanceAlert,
       depositNotifications,
-      defaultModel
+      defaultModel,
+      temperaure: typeof temperature === "number" ? temperature : temperaure,
     });
 
     return res.json({

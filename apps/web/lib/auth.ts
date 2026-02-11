@@ -113,6 +113,8 @@ export async function updateProfile(data: {
   lowBalanceAlert?: boolean;
   depositNotifications?: boolean;
   defaultModel?: "QWEN25" | "QWEN323" | "QWEN332" | "QWENQWQ" | "REDHAT";
+  temperaure?: number;
+  temperature?: number;
 }): Promise<GetMeResponse> {
   try {
     const { data: response } = await apiClient.put<{success: boolean; data: GetMeResponse}>("/auth/profile", data);
