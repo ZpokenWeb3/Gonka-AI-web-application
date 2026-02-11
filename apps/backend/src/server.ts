@@ -8,8 +8,8 @@ const start= async () => {
 
         const app = createApp();
 
-        app.listen(env.PORT, () => {
-            console.log(`Server running on PORT ${env.PORT}`);
+        app.listen(env.BACKEND_PORT, () => {
+            console.log(`Server running on PORT ${env.BACKEND_PORT}`);
         })
     } catch(err){
         console.error("Failed to start server", err);
