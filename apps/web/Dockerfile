@@ -5,7 +5,7 @@ FROM node:20-alpine AS builder
 RUN npm install -g pnpm
 
 # Принимаем build args для переменных окружения
-ARG NEXT_PUBLIC_API_BASE_URL=http://backend:5000
+ARG NEXT_PUBLIC_API_BASE_URL=/api
 
 WORKDIR /app
 COPY . .
