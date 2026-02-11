@@ -21,6 +21,9 @@ RUN pnpm run build
 # Production stage
 FROM node:20-alpine AS production
 
+LABEL org.opencontainers.image.source="https://github.com/ZpokenWeb3/Gonka-AI-web-application"
+LABEL org.opencontainers.image.description="Gonka AI Service frontend"
+
 WORKDIR /app
 
 # В монорепо Next.js standalone создаёт структуру apps/web/.next/standalone/apps/web/
@@ -35,9 +38,9 @@ COPY --from=builder /app/apps/web/.next/static ./apps/web/.next/static
 COPY --from=builder /app/apps/web/public ./apps/web/public
 
 ENV NODE_ENV=production
-ENV PORT=3000
+ENV FRONTEND_PORT=3000
 
-EXPOSE 3000
+EXPOSE ${FRONTEND_PORT}
 
 # Запускаем server.js из правильного места
 # В standalone режиме для монорепо server.js обычно в apps/web/server.js
