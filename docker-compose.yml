@@ -19,7 +19,7 @@ services:
     build:
       context: .
       dockerfile: ./apps/backend/Dockerfile
-    image: ghcr.io/Gonka-AI-web-application/backend:1.0.0
+    image: ghcr.io/zpokenweb3/gonka-ai-web-application/backend:1.0.0
     env_file:
       - .env
     ports:
@@ -37,7 +37,7 @@ services:
       dockerfile: ./apps/web/Dockerfile
       args:
         - NEXT_PUBLIC_API_BASE_URL
-    image: ghcr.io/Gonka-AI-web-application/frontend:1.0.0
+    image: ghcr.io/zpokenweb3/gonka-ai-web-application/frontend:1.0.0
     env_file:
       - .env
     ports:
