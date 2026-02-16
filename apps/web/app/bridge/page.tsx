@@ -38,8 +38,8 @@ export default function BridgePage() {
     };
 
     return (
-        <div className="flex flex-col items-center gap-7 p-10 w-full h-screen">
-            <div className="flex flex-col items-center gap-5 w-[400px] bg-[#131316] p-5 rounded-md">
+        <div className="flex flex-col items-center md:gap-7 gap-5 md:p-10 p-5 w-full h-screen">
+            <div className="flex flex-col items-center gap-5 sm:w-[400px] w-full bg-[#131316] p-5 rounded-md">
                 <h4 className="text-white text-[20px] font-semibold">
                     Bridge from Ethereum
                 </h4>

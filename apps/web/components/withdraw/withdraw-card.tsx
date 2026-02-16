@@ -1,7 +1,7 @@
 export const WithdrawCard = () => {
     return (
         <div
-            className="relative flex flex-col h-[300px] gap-7 w-full p-8 border border-[#232330] rounded-xl">
+            className="relative flex flex-col h-[300px] gap-7 w-full md:p-8 p-6 border border-[#232330] rounded-xl">
             <div className="
                 absolute right-0 top-0 h-full w-[45%]
                 bg-gradient-to-l from-[#6B26D9]/15 to-transparent

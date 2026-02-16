@@ -41,7 +41,7 @@ export default function DeveloperPage() {
   };
 
   return (
-    <div className={`flex flex-col gap-15 p-10 w-full h-screen`}>
+    <div className={`flex flex-col md:gap-15 gap-7 md:p-10 p-5 w-full h-screen`}>
       <DeveloperTop onCreateKey={handleCreateKey} />
       <div className="flex flex-col gap-7">
         <div className="flex items-center justify-between w-full">
@@ -70,7 +70,7 @@ export default function DeveloperPage() {
 
         <div className="flex flex-col gap-3">
           <SectionTitle text="Usage This Month" />
-          <div className="flex items-center w-full gap-3">
+          <div className="grid md:grid-cols-4 grid-cols-2 items-center w-full gap-3">
             <UpgradeBlock title="1,234" name="Requests" percent={12} />
             <UpgradeBlock title="523K" name="Tokens" percent={8} />
             <UpgradeBlock title="15.67" name="GNK Cost" percent={10} />
@@ -80,23 +80,23 @@ export default function DeveloperPage() {
         <div className="flex flex-col w-full gap-3">
           <SectionTitle text="Quick Links" />
           <div className="flex items-center w-full gap-3">
-            <Button className="w-[150px]" variant="outline">
+            <Button className="md:w-[150px] sm:w-[110px] w-[50px]" variant="outline">
               <BookMarked width={10} height={10} color="#ffffff" />
-              API Docs
+              <p className="md:flex hidden">API Docs</p>
             </Button>
-            <Button className="w-[150px]" variant="outline">
-              <TestTubeDiagonal width={10} height={10} />
-              Playground
+            <Button className="md:w-[150px] sm:w-[120px] w-[50px]" variant="outline">
+              <TestTubeDiagonal width={10} height={10}/>
+              <p className="md:flex hidden">Playground</p>
             </Button>
             <Link href="/analytics">
-              <Button className="w-[150px]" variant="outline">
-                <ChartBarIncreasing width={10} height={10} />
-                Analytics
+              <Button className="md:w-[150px] sm:w-[105px] w-[50px]" variant="outline">
+                <ChartBarIncreasing width={10} height={10}/>
+                <p className="md:flex hidden">Analytics</p>
               </Button>
             </Link>
-            <Button className="w-[150px]" variant="outline">
-              <MessageCircleMore width={10} height={10} />
-              Support
+            <Button className="md:w-[150px] sm:w-[100px] w-[50px]" variant="outline">
+              <MessageCircleMore width={10} height={10}/>
+              <p className="md:flex hidden">Support</p>
             </Button>
           </div>
         </div>

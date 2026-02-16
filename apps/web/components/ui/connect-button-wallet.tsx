@@ -181,7 +181,7 @@ export const ConnectButtonWallet = ({ onConnect }: { onConnect?: (address: strin
                         ? "Connecting..."
                         : address
                             ? `${address.slice(0, 6)}...${address.slice(-4)}`
-                            : "Connect Leap Wallet"}
+                            : "Connect Wallet"}
             </button>
 
             {connectionError && (

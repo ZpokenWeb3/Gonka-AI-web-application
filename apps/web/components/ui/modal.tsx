@@ -8,10 +8,10 @@ interface Props{
 
 export const Modal:FC<Props> = ({form, isOpen, onClose}) => {
     if (!isOpen) return null
-    
+
     return (
         <div className="flex z-[100] items-center justify-center fixed inset-0 bg-black/50 backdrop-blur-sm" onClick={onClose}>
-            <div className="flex sm:items-center items-end justify-center relative h-full" onClick={(e) => e.stopPropagation()}>
+            <div className="flex items-center justify-center w-full px-5 relative h-full" onClick={(e) => e.stopPropagation()}>
                 {form}
             </div>
         </div>

@@ -39,7 +39,7 @@ export const Input = ({ chatId }: InputProps) => {
     };
 
     return (
-        <div className="flex items-center justify-between w-[90%] bg-[#17111c] border border-[#21232C] focus-within:border-[#6B26D9] py-2 px-3 rounded-[12px]">
+        <div className="flex items-center justify-between md:w-[90%] w-full bg-[#17111c] border border-[#21232C] focus-within:border-[#6B26D9] py-2 px-3 rounded-[12px]">
             <Paperclip onClick={() => setIsModal(true)} width={18} height={18} className="mr-5 cursor-pointer" color="#ffffff" />
 
             <input

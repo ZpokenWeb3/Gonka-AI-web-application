@@ -16,15 +16,15 @@ interface Props {
 }
 
 export const SettingsBlock: FC<Props> = ({
-    logo,
-    title,
-    text,
-    version,
-    switcher,
-    onSwitchChange,
-    initialSwitchState,
-    onClick,
-}) => {
+                                             logo,
+                                             title,
+                                             text,
+                                             version,
+                                             switcher,
+                                             onSwitchChange,
+                                             initialSwitchState,
+                                             onClick,
+                                         }) => {
     const [enabled, setEnabled] = useState(initialSwitchState || false)
 
     useEffect(() => {
@@ -60,7 +60,7 @@ export const SettingsBlock: FC<Props> = ({
             </div>
 
             {switcher !== undefined ? (
-                <Switcher 
+                <Switcher
                     checked={enabled}
                     onChange={handleSwitchChange}/>
             ) : version ? (

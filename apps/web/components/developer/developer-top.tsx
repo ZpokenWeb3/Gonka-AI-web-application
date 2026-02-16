@@ -18,22 +18,22 @@ export const DeveloperTop = ({ onCreateKey }: Props) => {
 
   return (
     <div className="flex items-center justify-between">
-      <div className="flex flex-col">
-        <div className="flex items-center gap-3">
+      <div className="flex flex-col gap-1">
+        <div className="flex items-center md:gap-3 gap-1.5">
           <KeyRound width={33} height={33} color="#ffffff" />
-          <h2 className="text-[28px] text-white font-semibold">Developer API</h2>
+          <h2 className="md:text-[28px] text-[24px] text-white font-semibold">Developer API</h2>
         </div>
-        <p className="text-[16px] text-[#707070]">
+        <p className="md:text-[16px] text-[13px] text-[#707070]">
           Integrate Gonka AI into your applications
         </p>
       </div>
       <Button
         onClick={() => setOpen(true)}
-        className="w-[200px]"
+        className="md:w-[200px] w-[110px]"
         variant="secondary"
       >
         <Plus width={15} height={15} color="#ffffff" />
-        Create API Key
+        Create Key
       </Button>
 
       {open && (

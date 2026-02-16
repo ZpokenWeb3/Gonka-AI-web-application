@@ -7,7 +7,7 @@ interface BottomSectionProps {
 
 export const BottomSection  = ({ chatId }: BottomSectionProps) => {
     return (
-        <div className="flex flex-col items-center h-fit gap-1 w-full border-t border-[#21232C] p-5">
+        <div className="flex flex-col items-center h-fit gap-1 w-full border-t border-[#21232C] md:p-5 p-2">
             <Input chatId={chatId}/>
             <div className="flex items-center gap-1">
                 <Lock width={13} height={13} color="#73798C" />

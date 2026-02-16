@@ -10,26 +10,26 @@ import { ACCOUNT_DATA, ACCOUNT_PREFERENCES_DATA} from "../../types/contstants";
 
 
 export default function AccountPage() {
-  const { user, loading, updateUserProfile } = useProfile();
+    const { user, loading } = useProfile();
 
-  return (
-    <div className={`flex flex-col gap-7 p-10 w-full h-screen overflow-y-auto`}>
-       <AccountInfo/>
-       <div className="flex flex-wrap gap-16">
+    return (
+        <div className={`flex flex-col gap-7 md:p-10 p-5 w-full h-screen overflow-y-auto`}>
+            <AccountInfo/>
+            <div className="flex flex-wrap gap-16">
+                <div className="flex flex-col gap-3">
+                    <SectionTitle text="Wallet & Identity"/>
+                    {loading ? <SettingsSkeleton /> : <SettingsSection data={ACCOUNT_DATA(user)}/>}
+                </div>
+                <div className="flex flex-col gap-3">
+                    <SectionTitle text="Preferences"/>
+                    {loading ? <SettingsSkeleton /> : <SettingsSection data={ACCOUNT_PREFERENCES_DATA(user)}/>}
+                </div>
+            </div>
+            <UsageStatistic/>
             <div className="flex flex-col gap-3">
-                <SectionTitle text="Wallet & Identity"/>
+                <SectionTitle text="Danger Zone"/>
                 {loading ? <SettingsSkeleton /> : <SettingsSection data={ACCOUNT_DATA(user)}/>}
             </div>
-            <div className="flex flex-col gap-3">
-                <SectionTitle text="Preferences"/>
-                {loading ? <SettingsSkeleton /> : <SettingsSection data={ACCOUNT_PREFERENCES_DATA(user)}/>}
-            </div>
-       </div>
-       <UsageStatistic/>
-       <div className="flex flex-col gap-3">
-            <SectionTitle text="Danger Zone"/>
-            {loading ? <SettingsSkeleton /> : <SettingsSection data={ACCOUNT_DATA(user)}/>}
         </div>
-    </div>
-  );
+    );
 }
