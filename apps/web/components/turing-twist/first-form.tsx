@@ -5,9 +5,11 @@ import { Timeblock } from "./timeblock";
 
 interface Props {
     setPlay: (isPlay: boolean) => void;
+    onQueueStart: () => void;
+    isQueueing: boolean;
 }
 
-export const FirstForm: FC<Props> = ({ setPlay }) => {
+export const FirstForm: FC<Props> = ({ setPlay, onQueueStart, isQueueing }) => {
     const [isTime, setIsTime] = useState(false);
 
     return (
@@ -38,9 +40,13 @@ export const FirstForm: FC<Props> = ({ setPlay }) => {
             </div>
 
             <Button
-                onClick={() => setIsTime(true)}
+                onClick={() => {
+                    setIsTime(true);
+                    onQueueStart();
+                }}
                 className="w-[200px] h-[60px] text-[25px]"
                 variant="secondary"
+                disabled={isQueueing}
             >
                 Play
                 <Play width={32} height={32} color="#ffffff" />
@@ -48,8 +54,10 @@ export const FirstForm: FC<Props> = ({ setPlay }) => {
 
             {isTime && (
                 <Timeblock
-                    duration={15}
-                    onFinish={() => setPlay(true)}
+                    duration={5}
+                    onFinish={() => {
+
+                    }}
                 />
             )}
         </>

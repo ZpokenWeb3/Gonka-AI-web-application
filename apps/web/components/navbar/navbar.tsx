@@ -54,14 +54,14 @@ export const Navbar = () => {
                         </Button>
                     </Link>
                 </div>
-                {/*<div className="px-2">*/}
-                {/*    <Link href="/turing-twist">*/}
-                {/*        <Button variant="secondary" className="flex items-center gap-2">*/}
-                {/*            Turing Twist*/}
-                {/*            <HatGlasses color="#ffffff"/>*/}
-                {/*        </Button>*/}
-                {/*    </Link>*/}
-                {/*</div>*/}
+                <div className="px-2">
+                    <Link href="/turing-twist">
+                        <Button variant="secondary" className="flex items-center gap-2">
+                            Turing Twist
+                            <HatGlasses color="#ffffff"/>
+                        </Button>
+                    </Link>
+                </div>
                 <div className="flex items-center p-4 gap-1.5 border-t border-[#232330]">
                     <p className="text-xs text-[#3F434D]">Dark-mode only • v1.0 prototype</p>
                 </div>

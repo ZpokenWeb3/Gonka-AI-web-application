@@ -19,21 +19,21 @@ interface Props{
 
 export const SettingsSection:FC<Props> = ({data}) => {
     return (
-        <div className="flex flex-col w-[600px] rounded-[15px] border border-[#232328]">
+        <div className="flex flex-col lg:w-[600px] w-full rounded-[15px] border border-[#232328]">
             {data.map((item, index) => (
-                <SettingsBlock
-                    key={index}
-                    logo={item.logo}
-                    title={item.title}
-                    text={item.text}
-                    version={item.version}
+                <SettingsBlock 
+                    key={index} 
+                    logo={item.logo} 
+                    title={item.title} 
+                    text={item.text} 
+                    version={item.version} 
                     switcher={item.switcher}
                     onSwitchChange={item.onSwitchChange}
                     initialSwitchState={item.initialSwitchState}
                     onClick={item.onClick}
                 />
             ))}
-
-        </div>
+        
+        </div> 
     )
 }

@@ -45,15 +45,15 @@ export default function SettingsPage() {
     };
 
   return (
-      <div className={`flex flex-col md:gap-15 gap-7 md:p-10 p-5 w-full overflow-y-auto h-full`}>
+      <div className={`flex flex-col lg:gap-15 gap-10 lg:p-10 md:p-6 p-4 w-full h-screen`}>
         <div className="flex items-center gap-3">
             <Settings width={33} height={33} color="#ffffff"/>
             <h2 className="text-[28px] text-white font-semibold">Settings</h2>
         </div>
-
         
-        <div className="flex lg:flex-wrap lg:flex-row flex-col w-full md:gap-7 gap-2">
-            <div className="flex flex-col gap-3">
+        
+        <div className="flex md:flex-wrap flex-col w-full gap-7">
+            <div className="flex flex-col md:w-auto w-full gap-3">
                 <SectionTitle text="Chat Settings"/>
                 {loading ? (
                     <SettingsSkeleton />
