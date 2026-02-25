@@ -2,6 +2,15 @@ import { Server as HttpServer } from "http";
 import { Server, Socket } from "socket.io";
 import {SessionManager} from "../game/session.manager";
 
+interface ChatSendPayload {
+    sessionId: string;
+    text: string;
+}
+
+interface GameGuessPayload {
+    sessionId: string;
+    guess: "human" | "ai";
+}
 
 export const initSocket = (server: HttpServer) => {
     const allowedOrigins = process.env.FRONTEND_URL
@@ -23,7 +32,7 @@ export const initSocket = (server: HttpServer) => {
             manager.queuePlayer(socket);
         });
 
-        socket.on("chat:send", async (data) => {
+        socket.on("chat:send", async (data: ChatSendPayload) => {
             await manager.handleMessage(
                 socket,
                 data.sessionId,
@@ -31,7 +40,7 @@ export const initSocket = (server: HttpServer) => {
             );
         });
 
-        socket.on("game:guess", (data) => {
+        socket.on("game:guess", (data: GameGuessPayload) => {
             manager.guess(
                 socket,
                 data.sessionId,
