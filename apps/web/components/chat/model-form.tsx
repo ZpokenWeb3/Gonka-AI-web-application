@@ -36,7 +36,7 @@ interface Props {
 
 export const ModelForm = ({ onSelect, disabled = false }: Props) => {
     return (
-        <div className="flex flex-col gap-10 w-[500px] h-[550px] bg-[#131316] shadow-2xl shadow-[#1c0246] p-6 rounded-[12px]">
+        <div className="flex flex-col gap-10 w-[500px] h-[550px] bg-[#131316] p-6 rounded-[12px]">
             <div className="flex flex-col gap-2">
                 <div className="flex items-center gap-3.5">
                     <Brain width={30} height={30} color="#ffffff"/>
