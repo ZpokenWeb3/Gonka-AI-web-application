@@ -71,6 +71,11 @@ export const CreationKeyForm: React.FC<Props> = ({ onClose, onCreateKey }) => {
     onClose();
   };
 
+  const curlCommand = `curl https://api.gonka.ai/v1/chat/completions \\
+  -H "Authorization: Bearer ${createdKey}" \\
+  -H "Content-Type: application/json" \\
+  -d '{}'`;
+
   if (createdKey) {
     return (
       <div className="flex flex-col gap-4 w-[500px] bg-[#131316] p-5 rounded-[12px]">
@@ -106,22 +111,19 @@ export const CreationKeyForm: React.FC<Props> = ({ onClose, onCreateKey }) => {
         <div className="flex flex-col gap-3">
            <h5 className="text-sm text-white">QUICK START:</h5> 
            <div className="flex items-center gap-2 relative p-3 bg-[#1a1a1d] text-xs text-green-400 rounded-lg border border-[#232328]">
-            ```bash <br/>                                               
-              curl https://api.gonka.ai/v1/chat/completions \   <br/>       
-              -H "Authorization: Bearer YOUR_KEY" \     <br/>             
-              -H "Content-Type: application/json" \    <br/>               
-              -d           <br/> 
-            ```
+              <pre className="whitespace-pre-wrap font-mono flex-1">
+                {curlCommand}
+              </pre>
 
-            <Button
-              size="sm"
-              variant="outline"
-              onClick={() => copyToClipboard(createdKey)}
-              className="flex items-center absolute right-[10px] bottom-[10px] gap-2 w-fit flex-shrink-0"
-            >
-              <Copy width={14} height={14} />
-            </Button>
-           </div>
+              <Button
+                size="sm"
+                variant="outline"
+                onClick={() => copyToClipboard(curlCommand)}
+                className="flex items-center absolute right-[10px] bottom-[10px] gap-2 w-fit flex-shrink-0"
+              >
+                <Copy width={14} height={14} />
+              </Button>
+            </div>
         </div>
 
         <div className="flex gap-2">
