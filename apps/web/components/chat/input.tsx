@@ -30,11 +30,11 @@ export const Input = ({ chatId }: InputProps) => {
             if (content) {
                 addAssistantMessage(content);
             } else {
-                addAssistantMessage("[Нет ответа от AI]");
+                addAssistantMessage("[No response from AI]");
             }
         } catch (err) {
             console.error("Failed to send Gonka chat message", err);
-            addAssistantMessage("[Ошибка при получении ответа от AI]");
+            addAssistantMessage("[Error receiving response from AI]");
         }
     };
 
