@@ -47,9 +47,14 @@ export const Navbar = () => {
                             Developer API
                         </Button>
                     </Link>
-                    <Link href="https://gonka.ai/introduction/" className="w-[100%]">
+                    <Link
+                        href="https://gonka.ai/introduction/"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="w-[100%]"
+                        >
                         <Button variant="default" className="w-[100%]">
-                            <CircleQuestionMark width={16} height={16} color="#3F434D"/>
+                            <CircleQuestionMark width={16} height={16} color="#3F434D" />
                             Help
                         </Button>
                     </Link>
