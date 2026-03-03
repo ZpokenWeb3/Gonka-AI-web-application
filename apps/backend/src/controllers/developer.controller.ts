@@ -30,11 +30,21 @@ export const createKey = async(req: Request, res: Response) => {
             return res.status(400).json({ error: "Name is required and must be a string" });
         }
 
+        const trimmedName = name.trim();
+
+        if (!trimmedName) {
+            return res.status(400).json({ error: "Name must not be empty" });
+        }
+
+        if (trimmedName.length > 20) {
+            return res.status(400).json({ error: "Name must be at most 20 characters" });
+        }
+
         const fullKey = generateApiKey();
         const keyPrefix = fullKey.slice(0, 6);
         const keyHash = crypto.createHash('sha256').update(fullKey).digest('hex');
 
-        const apiKey = await createApiKey(userId, name, keyPrefix, keyHash, rateLimitPerMinute, rateLimitPerDay, monthlySpendLimit);
+        const apiKey = await createApiKey(userId, trimmedName, keyPrefix, keyHash, rateLimitPerMinute, rateLimitPerDay, monthlySpendLimit);
 
         return res.status(201).json({
             success: true,

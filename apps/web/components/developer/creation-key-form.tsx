@@ -141,7 +141,8 @@ export const CreationKeyForm: React.FC<Props> = ({ onClose, onCreateKey }) => {
       <div className="flex items-center justify-between border border-[#6B26D9] py-2 px-3 rounded-[12px]">
         <input
           value={keyName}
-          onChange={(e) => setKeyName(e.target.value)}
+          maxLength={20}
+          onChange={(e) => setKeyName(e.target.value.slice(0, 20))}
           placeholder="Enter key name"
           className="w-full text-sm text-white outline-none bg-transparent"
           onKeyPress={(e) => e.key === 'Enter' && handleCreateKey()}
