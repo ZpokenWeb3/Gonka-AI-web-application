@@ -17,6 +17,7 @@ export const ChatWrapper = ({ chatId }: ChatWrapperProps) => {
     const [isTyping, setIsTyping] = useState(false);
     
     const { data: chatData, isLoading: chatLoading } = useChat(chatId || "");
+    const chatTitle = chatData?.data?.title ?? "Untitled Chat";
 
     useEffect(() => {
         if (!containerRef.current) return
@@ -60,6 +61,11 @@ export const ChatWrapper = ({ chatId }: ChatWrapperProps) => {
 
     return (
         <div className="flex flex-col w-full flex-1">
+            <div className="flex items-center justify-center h-12 border-b border-[#232330]">
+                <h2 className="text-sm font-medium text-[#E0E4EB] truncate max-w-[60%] text-center">
+                    {chatTitle}
+                </h2>
+            </div>
             <div
                 ref={containerRef}
                 className="chat-scroll overflow-y-auto p-6 flex-1 space-y-4"
