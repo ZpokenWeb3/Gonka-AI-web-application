@@ -6,6 +6,7 @@ import {
     getUserChats,
     updateChatInfo
 } from "../services/chat.service";
+import { validateChatTitle } from "../validation/chat.validation";
 import { sendMessageAndGetResponse } from "../services/message.service";
 
 declare global {
@@ -28,8 +29,21 @@ export const createChat = async (req: Request, res: Response) => {
             maxTokens
         } = req.body;
 
+        let safeTitle = title as string | undefined;
+
+        if (typeof title !== "undefined") {
+            const validation = validateChatTitle(title);
+            if (!validation.ok) {
+                return res.status(400).json({
+                    success: false,
+                    message: validation.message,
+                });
+            }
+            safeTitle = validation.title;
+        }
+
         const chat = await createChatService(userId, {
-            title,
+            title: safeTitle,
             model,
             systemPrompt,
             temperature,
@@ -175,14 +189,22 @@ export const updateChat = async (req: Request, res: Response) => {
         const { id } = req.params;
         const { isPinned, title } = req.body;
 
-        if (typeof isPinned !== "boolean" || typeof title !== "string") {
+        if (typeof isPinned !== "boolean") {
             return res.status(400).json({
                 success: false,
                 message: "Invalid data format",
             });
         }
 
-        const chat = await updateChatInfo(id, userId, isPinned, title);
+        const validation = validateChatTitle(title);
+        if (!validation.ok) {
+            return res.status(400).json({
+                success: false,
+                message: validation.message,
+            });
+        }
+
+        const chat = await updateChatInfo(id, userId, isPinned, validation.title);
 
         if (!chat) {
             return res.status(404).json({

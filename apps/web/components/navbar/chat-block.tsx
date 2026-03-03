@@ -114,7 +114,8 @@ export const ChatBlock = ({ chat }: ChatBlockProps) => {
                         ref={titleInputRef}
                         className="bg-transparent border-b border-[#444] text-white text-[14px] outline-none focus:border-[#6B26D9] truncate"
                         value={localTitle}
-                        onChange={(e) => setLocalTitle(e.target.value)}
+                        maxLength={20}
+                        onChange={(e) => setLocalTitle(e.target.value.slice(0, 20))}
                         onBlur={finishRename}
                         onClick={(e) => e.stopPropagation()}
                         onKeyDown={(e) => {
