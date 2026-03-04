@@ -21,7 +21,7 @@ export const Navbar = () => {
     };
 
     return (
-        <div className="md:flex hidden flex-col w-[320px] bg-[#0f0f0f] border-r border-[#232330]">
+        <div className="md:flex hidden flex-col w-[320px] h-screen bg-[#0f0f0f] border-r border-[#232330]">
             <Link href="/">
                 <div className="flex items-center gap-3 px-4 pt-4 pb-2">
                     <Logo/>
@@ -52,9 +52,9 @@ export const Navbar = () => {
                         target="_blank"
                         rel="noopener noreferrer"
                         className="w-[100%]"
-                        >
+                    >
                         <Button variant="default" className="w-[100%]">
-                            <CircleQuestionMark width={16} height={16} color="#3F434D" />
+                            <CircleQuestionMark width={16} height={16} color="#3F434D"/>
                             Help
                         </Button>
                     </Link>

@@ -44,12 +44,12 @@ export const ChatList = () => {
     const regularChats = chats.filter(chat => !chat.isPinned);
 
     return (
-        <div className="flex flex-col flex-1 gap-1">
-            <div className="flex flex-col gap-1.5 relative w-full px-4">
+        <div className="flex flex-col flex-1 min-h-0 overflow-y-auto gap-1">
+            <div className="flex flex-col gap-1.5 relative w-full px-4 pb-4">
                 {pinnedChats.length > 0 && (
                     <div className="flex flex-col gap-1.5">
                         <div className="flex items-center gap-2 px-2 py-1">
-                            <Pin width={14} height={14} color="#a7a7b8" />
+                            <Pin width={14} height={14} color="#a7a7b8"/>
                             <h3 className="text-xs font-medium text-[#a7a7b8] uppercase tracking-wide">
                                 Pinned Chats
                             </h3>
