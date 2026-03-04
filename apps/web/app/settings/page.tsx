@@ -12,6 +12,7 @@ import { useModelSelection } from "../../hooks/useModelSelection";
 import { Modal } from "../../components/ui/modal";
 import { ModelForm } from "../../components/chat/model-form";
 import {TemperatureForm} from "../../components/settings/temperature-form";
+import {LogOutBtn} from "../../components/settings/log-out-btn";
 
 export default function SettingsPage() {
     const { user, loading, updateUserProfile } = useProfile();
@@ -85,10 +86,7 @@ export default function SettingsPage() {
                   <SectionTitle text="About"/>
                   {loading ? <SettingsSkeleton/> : <SettingsSection data={ABOUT_DATA}/>}
               </div>
-              <button className="flex items-center justify-center gap-2 h-[40px] w-fit px-5 rounded-sm text-red-500 cursor-pointer border-red-500 border-[1px]">
-                  Disconnect Wallet
-                  <LogOut width={20} height={20}/>
-              </button>
+              <LogOutBtn/>
           </div>
 
           {showModelModal && (
