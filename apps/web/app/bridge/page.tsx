@@ -7,6 +7,7 @@ import { FirstStep } from "../../components/bridge/first-step";
 import { SecondStep } from "../../components/bridge/second-step";
 import { ThirdStep } from "../../components/bridge/third-step";
 import { FourthStep } from "../../components/bridge/fourth-step";
+import {BackButton} from "../../components/ui/back-button";
 
 
 const STEPS = [
@@ -39,6 +40,7 @@ export default function BridgePage() {
 
     return (
         <div className="flex flex-col items-center md:gap-7 gap-5 md:p-10 p-5 w-full h-screen">
+            <BackButton />
             <div className="flex flex-col items-center gap-5 sm:w-[400px] w-full bg-[#131316] p-5 rounded-md">
                 <h4 className="text-white text-[20px] font-semibold">
                     Bridge from Ethereum

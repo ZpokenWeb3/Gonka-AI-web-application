@@ -16,6 +16,7 @@ import { useDeveloperApi } from "../../hooks/useDeveloperApi";
 import { showCustomToast } from "../../components/ui/custom-toast";
 import Link from "next/link";
 import type { CreateApiKeyRequest } from "../../lib/developer-api";
+import {BackButton} from "../../components/ui/back-button";
 
 export default function DeveloperPage() {
   const { apiKeys, loading, deleteApiKeyById, createNewApiKey } =
@@ -42,6 +43,7 @@ export default function DeveloperPage() {
 
   return (
       <div className="flex flex-col md:gap-15 gap-7 md:p-10 p-5 w-full h-full overflow-y-auto">
+        <BackButton/>
         <DeveloperTop onCreateKey={handleCreateKey}/>
         <div className="flex flex-col gap-7">
           <div className="flex items-center justify-between w-full">

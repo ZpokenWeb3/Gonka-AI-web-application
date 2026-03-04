@@ -13,6 +13,7 @@ import { Modal } from "../../components/ui/modal";
 import { ModelForm } from "../../components/chat/model-form";
 import {TemperatureForm} from "../../components/settings/temperature-form";
 import {LogOutBtn} from "../../components/settings/log-out-btn";
+import {BackButton} from "../../components/ui/back-button";
 
 export default function SettingsPage() {
     const { user, loading, updateUserProfile } = useProfile();
@@ -47,6 +48,7 @@ export default function SettingsPage() {
 
   return (
       <div className="flex flex-col lg:gap-15 gap-10 lg:p-10 md:p-6 p-4 w-full h-full overflow-y-auto">
+          <BackButton/>
           <div className="flex items-center gap-3">
               <Settings width={33} height={33} color="#ffffff"/>
               <h2 className="text-[28px] text-white font-semibold">Settings</h2>
