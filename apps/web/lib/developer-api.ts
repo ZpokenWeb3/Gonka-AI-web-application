@@ -58,6 +58,9 @@ export interface ApiKey {
   createdAt: string;
   lastUsedAt: string | null;
   isActive: boolean;
+  rateLimitPerMinute?: number | null;
+  rateLimitPerDay?: number | null;
+  monthlySpendLimit?: number | null;
 }
 
 export interface CreateApiKeyResponse {
@@ -77,6 +80,14 @@ export interface CreateApiKeyRequest {
   rateLimitPerMinute?: number;
   rateLimitPerDay?: number;
   monthlySpendLimit?: number;
+}
+
+export interface UpdateApiKeyRequest {
+  name?: string;
+  rateLimitPerMinute?: number;
+  rateLimitPerDay?: number;
+  monthlySpendLimit?: number;
+  isActive?: boolean;
 }
 
 export async function createApiKey(payload: CreateApiKeyRequest): Promise<CreateApiKeyResponse> {
@@ -117,6 +128,27 @@ export async function deleteApiKey(keyId: string): Promise<void> {
     await apiClient.delete(`/developer/keys/${keyId}`);
   } catch(error) {
     const message = extractErrorMessage(error, "Failed to delete API key");
+    throw new Error(message);
+  }
+}
+
+export async function updateApiKey(
+  keyId: string,
+  payload: UpdateApiKeyRequest
+): Promise<ApiKey> {
+  try {
+    const { data } = await apiClient.patch<{ success: boolean; data: ApiKey }>(
+      `/developer/keys/${keyId}`,
+      payload
+    );
+
+    if (!data.success || !data.data) {
+      throw new Error("Invalid response structure");
+    }
+
+    return data.data;
+  } catch (error) {
+    const message = extractErrorMessage(error, "Failed to update API key");
     throw new Error(message);
   }
 }

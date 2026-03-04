@@ -8,6 +8,8 @@ import {
   ApiKey,
   CreateApiKeyResponse,
   CreateApiKeyRequest,
+  UpdateApiKeyRequest,
+  updateApiKey,
 } from "../lib/developer-api";
 
 export function useDeveloperApi() {
@@ -15,6 +17,7 @@ export function useDeveloperApi() {
   const [loading, setLoading] = useState(true);
   const [creating, setCreating] = useState(false);
   const [deleting, setDeleting] = useState<string | null>(null);
+  const [updating, setUpdating] = useState<string | null>(null);
 
   const loadApiKeys = async () => {
     try {
@@ -63,6 +66,25 @@ export function useDeveloperApi() {
     }
   };
 
+  const updateApiKeyById = async (
+    keyId: string,
+    payload: UpdateApiKeyRequest
+  ): Promise<ApiKey> => {
+    try {
+      setUpdating(keyId);
+      const updated = await updateApiKey(keyId, payload);
+      setApiKeys((prev) =>
+        prev.map((key) => (key.id === keyId ? { ...key, ...updated } : key))
+      );
+      return updated;
+    } catch (error) {
+      console.error("Failed to update API key:", error);
+      throw error;
+    } finally {
+      setUpdating(null);
+    }
+  };
+
   useEffect(() => {
     loadApiKeys();
   }, []);
@@ -75,5 +97,7 @@ export function useDeveloperApi() {
     loadApiKeys,
     createNewApiKey,
     deleteApiKeyById,
+    updating,
+    updateApiKeyById,
   };
 }

@@ -2,6 +2,14 @@ import { ApiKey, PrismaClient } from "@prisma/client";
 
 const prisma = new PrismaClient();
 
+interface UpdateApiKeyData {
+    name?: string;
+    rateLimitPerMinute?: number;
+    rateLimitPerDay?: number;
+    monthlySpendLimit?: number;
+    isActive?: boolean;
+}
+
 export const createApiKey = async(userId: string, name: string, keyPrefix: string, keyHash: string, rateLimitPerMinute: number, rateLimitPerDay: number, monthlySpendLimit: number): Promise<ApiKey> => {
     const apiKey = await prisma.apiKey.create({
         data: {
@@ -34,4 +42,24 @@ export const deleteApiKey = async(userId: string, keyId: string): Promise<boolea
     });
     
     return deletedKey.count > 0;
+}
+
+export const updateApiKey = async(userId: string, keyId: string, data: UpdateApiKeyData): Promise<ApiKey | null> => {
+    const existingKey = await prisma.apiKey.findFirst({
+        where: {
+            id: keyId,
+            userId: userId
+        }
+    });
+
+    if (!existingKey) {
+        return null;
+    }
+
+    const updatedKey = await prisma.apiKey.update({
+        where: { id: keyId },
+        data
+    });
+
+    return updatedKey;
 }

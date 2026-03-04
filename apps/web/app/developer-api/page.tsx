@@ -15,11 +15,11 @@ import {
 import { useDeveloperApi } from "../../hooks/useDeveloperApi";
 import { showCustomToast } from "../../components/ui/custom-toast";
 import Link from "next/link";
-import type { CreateApiKeyRequest } from "../../lib/developer-api";
+import type { CreateApiKeyRequest, UpdateApiKeyRequest } from "../../lib/developer-api";
 import {BackButton} from "../../components/ui/back-button";
 
 export default function DeveloperPage() {
-  const { apiKeys, loading, deleteApiKeyById, createNewApiKey } =
+  const { apiKeys, loading, deleteApiKeyById, createNewApiKey, updateApiKeyById } =
     useDeveloperApi();
 
   const handleDeleteKey = async (keyId: string) => {
@@ -37,6 +37,19 @@ export default function DeveloperPage() {
       return { fullKey: result.fullKey };
     } catch (error) {
       console.error("Failed to create API key:", error);
+      throw error;
+    }
+  };
+
+  const handleUpdateKey = async (
+    keyId: string,
+    payload: UpdateApiKeyRequest
+  ): Promise<void> => {
+    try {
+      await updateApiKeyById(keyId, payload);
+      showCustomToast("success", "API Key updated successfully");
+    } catch (error) {
+      console.error("Failed to update API key:", error);
       throw error;
     }
   };
@@ -66,6 +79,7 @@ export default function DeveloperPage() {
                       key={key.id}
                       apiKey={key}
                       onDelete={() => handleDeleteKey(key.id)}
+                      onEdit={(payload) => handleUpdateKey(key.id, payload)}
                   />
               ))
           )}

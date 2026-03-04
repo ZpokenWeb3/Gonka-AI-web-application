@@ -2,24 +2,19 @@ import { useState } from "react"
 import { KeyRound } from "lucide-react"
 import { Button } from "../ui/button"
 import { DeleteKeyForm } from "./delete-key-form"
-import {Modal} from "../ui/modal";
-
-interface ApiKey {
-    id: string;
-    name: string;
-    keyPrefix: string;
-    createdAt: string;
-    lastUsedAt: string | null;
-    isActive: boolean;
-}
+import { Modal } from "../ui/modal";
+import type { ApiKey, UpdateApiKeyRequest } from "../../lib/developer-api";
+import { EditKeyForm } from "./edit-key-form";
 
 interface Props {
     apiKey: ApiKey;
     onDelete: () => void;
+    onEdit: (payload: UpdateApiKeyRequest) => Promise<void>;
 }
 
-export const APIBlock: React.FC<Props> = ({ apiKey, onDelete }) => {
-    const [isOpen, setIsOpen] = useState(false)
+export const APIBlock: React.FC<Props> = ({ apiKey, onDelete, onEdit }) => {
+    const [isDeleteOpen, setIsDeleteOpen] = useState(false)
+    const [isEditOpen, setIsEditOpen] = useState(false)
 
     const formatDate = (dateString: string) => {
         return new Date(dateString).toLocaleDateString('en-US', {
@@ -31,7 +26,7 @@ export const APIBlock: React.FC<Props> = ({ apiKey, onDelete }) => {
 
     const handleConfirmDelete = () => {
         onDelete()
-        setIsOpen(false)
+        setIsDeleteOpen(false)
     }
 
     return (
@@ -69,7 +64,7 @@ export const APIBlock: React.FC<Props> = ({ apiKey, onDelete }) => {
                         </p>
                     )}
                     <p className="text-[11px] text-[#707070]">
-                        Rate: 60 req/min
+                        Rate: {apiKey.rateLimitPerMinute ?? 60} req/min
                     </p>
                 </div>
 
@@ -77,6 +72,7 @@ export const APIBlock: React.FC<Props> = ({ apiKey, onDelete }) => {
                     <Button
                         className="w-[54px] h-[26px] text-[12px]"
                         variant="outline"
+                        onClick={() => setIsEditOpen(true)}
                     >
                         Edit
                     </Button>
@@ -84,19 +80,39 @@ export const APIBlock: React.FC<Props> = ({ apiKey, onDelete }) => {
                     <Button
                         className="w-[65px] h-[26px] text-[#d94149] text-[12px]"
                         variant="outline"
-                        onClick={() => setIsOpen(true)}
+                        onClick={() => setIsDeleteOpen(true)}
                     >
                         Delete
                     </Button>
                 </div>
             </div>
 
-            {isOpen && (
-                <Modal isOpen={isOpen} onClose={() => setIsOpen(false)} form={<DeleteKeyForm
-                    keyName={apiKey.name}
-                    onConfirm={handleConfirmDelete}
-                    onCancel={() => setIsOpen(false)}
-                />}/>
+            {isDeleteOpen && (
+                <Modal
+                    isOpen={isDeleteOpen}
+                    onClose={() => setIsDeleteOpen(false)}
+                    form={
+                        <DeleteKeyForm
+                            keyName={apiKey.name}
+                            onConfirm={handleConfirmDelete}
+                            onCancel={() => setIsDeleteOpen(false)}
+                        />
+                    }
+                />
+            )}
+
+            {isEditOpen && (
+                <Modal
+                    isOpen={isEditOpen}
+                    onClose={() => setIsEditOpen(false)}
+                    form={
+                        <EditKeyForm
+                            apiKey={apiKey}
+                            onClose={() => setIsEditOpen(false)}
+                            onUpdate={onEdit}
+                        />
+                    }
+                />
             )}
         </>
     )
