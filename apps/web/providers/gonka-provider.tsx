@@ -15,8 +15,28 @@ const GonkaContext = createContext<GonkaContextType>({
 });
 
 export const GonkaProvider = ({ children }: { children: ReactNode }) => {
-    const [address, setAddress] = useState<string | null>(null);
+    const [address, setAddress] = useState<string | null>(() => {
+        if (typeof window === "undefined") return null;
+        try {
+            return localStorage.getItem("gonka_address");
+        } catch {
+            return null;
+        }
+    });
     const [balance, setBalance] = useState<number>(0);
+
+    useEffect(() => {
+        if (typeof window === "undefined") return;
+        try {
+            if (address) {
+                localStorage.setItem("gonka_address", address);
+            } else {
+                localStorage.removeItem("gonka_address");
+            }
+        } catch {
+            // ignore localStorage errors
+        }
+    }, [address]);
 
     useEffect(() => {
         const fetchBalance = async () => {

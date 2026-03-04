@@ -14,7 +14,6 @@ export const GettingStarted = () => {
     const { balance } = useGonka();
     const { address } = useGonka();
 
-    console.log(address)
 
     const walletConnected = !!address;
     const hasFunds = balance > 0;

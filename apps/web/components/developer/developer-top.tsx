@@ -6,6 +6,7 @@ import { useState } from "react";
 import { Modal } from "../ui/modal";
 import { CreationKeyForm } from "./creation-key-form";
 import type { CreateApiKeyRequest } from "../../lib/developer-api";
+import {useGonka} from "../../providers/gonka-provider";
 
 interface Props {
   onCreateKey: (payload: CreateApiKeyRequest) => Promise<{ fullKey: string }>;
@@ -13,6 +14,7 @@ interface Props {
 
 export const DeveloperTop = ({ onCreateKey }: Props) => {
   const [open, setOpen] = useState(false);
+  const { address } = useGonka();
 
   const handleClose = () => setOpen(false);
 
@@ -31,6 +33,7 @@ export const DeveloperTop = ({ onCreateKey }: Props) => {
         onClick={() => setOpen(true)}
         className="md:w-[200px] w-[110px]"
         variant="secondary"
+        disabled={!address}
       >
         <Plus width={15} height={15} color="#ffffff" />
         Create Key
