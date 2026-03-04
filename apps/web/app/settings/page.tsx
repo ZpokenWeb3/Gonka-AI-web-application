@@ -1,7 +1,7 @@
 'use client'
 
 import { useState } from "react";
-import { Settings } from "lucide-react";
+import {LogOut, Settings} from "lucide-react";
 import { SettingsSection } from "../../components/settings/settings-section";
 import { ABOUT_DATA, CHATSETTINGS_DATA, NOTIFICATIONS_DATA } from "../../types/contstants";
 import { SectionTitle } from "../../components/ui/section-title";
@@ -45,69 +45,74 @@ export default function SettingsPage() {
     };
 
   return (
-      <div className={`flex flex-col lg:gap-15 gap-10 lg:p-10 md:p-6 p-4 w-full h-screen`}>
-        <div className="flex items-center gap-3">
-            <Settings width={33} height={33} color="#ffffff"/>
-            <h2 className="text-[28px] text-white font-semibold">Settings</h2>
-        </div>
-        
-        
-        <div className="flex md:flex-wrap flex-col w-full gap-7">
-            <div className="flex flex-col md:w-auto w-full gap-3">
-                <SectionTitle text="Chat Settings"/>
-                {loading ? (
-                    <SettingsSkeleton />
-                ) : (
-                    <SettingsSection
-                        data={CHATSETTINGS_DATA(user).map((item, index) => {
-                            if (index === 0) {
-                                return {
-                                    ...item,
-                                    onClick: () => setShowModelModal(true),
-                                };
-                            }
-                            if (index === 1) {
-                                return {
-                                    ...item,
-                                    onClick: () => setShowTemperatureModal(true),
-                                };
-                            }
-                            return item;
-                        })}
-                    />
-                )}
-            </div>
-            <div className="flex flex-col gap-3">
-                <SectionTitle text="Notifications"/>
-                {loading ? <SettingsSkeleton /> : <SettingsSection data={NOTIFICATIONS_DATA(user, handleLowBalanceChange, handleDepositNotificationChange)}/>}
-            </div>
-            <div className="flex flex-col gap-3">
-                <SectionTitle text="About"/>
-                {loading ? <SettingsSkeleton /> : <SettingsSection data={ABOUT_DATA}/>}
-            </div>
-        </div>
-        {showModelModal && (
-            <Modal
-                isOpen={showModelModal}
-                onClose={() => setShowModelModal(false)}
-                form={<ModelForm onSelect={selectModel} disabled={modelLoading} />}
-            />
-        )}
-        {showTemperatureModal && (
-            <Modal
-                isOpen={showTemperatureModal}
-                onClose={() => setShowTemperatureModal(false)}
-                form={(
-                    <TemperatureForm
-                        setShowTemperatureModal={setShowTemperatureModal}
-                        temperature={user?.temperaure ?? 0.7}
-                        onUpdateTemperature={async (newTemp: number) => {
-                            await updateUserProfile({ temperaure: newTemp });
-                        }}
-                    />
-                )}
-            />
-        )}
-    </div>
+      <div className="flex flex-col lg:gap-15 gap-10 lg:p-10 md:p-6 p-4 w-full h-full overflow-y-auto">
+          <div className="flex items-center gap-3">
+              <Settings width={33} height={33} color="#ffffff"/>
+              <h2 className="text-[28px] text-white font-semibold">Settings</h2>
+          </div>
+
+          <div className="flex md:flex-wrap flex-col w-full gap-7">
+              <div className="flex flex-col md:w-auto w-full gap-3">
+                  <SectionTitle text="Chat Settings"/>
+                  {loading ? (
+                      <SettingsSkeleton/>
+                  ) : (
+                      <SettingsSection
+                          data={CHATSETTINGS_DATA(user).map((item, index) => {
+                              if (index === 0) {
+                                  return {
+                                      ...item,
+                                      onClick: () => setShowModelModal(true),
+                                  };
+                              }
+                              if (index === 1) {
+                                  return {
+                                      ...item,
+                                      onClick: () => setShowTemperatureModal(true),
+                                  };
+                              }
+                              return item;
+                          })}
+                      />
+                  )}
+              </div>
+              <div className="flex flex-col gap-3 ">
+                  <SectionTitle text="Notifications"/>
+                  {loading ? <SettingsSkeleton/> : <SettingsSection
+                      data={NOTIFICATIONS_DATA(user, handleLowBalanceChange, handleDepositNotificationChange)}/>}
+              </div>
+              <div className="flex flex-col gap-3">
+                  <SectionTitle text="About"/>
+                  {loading ? <SettingsSkeleton/> : <SettingsSection data={ABOUT_DATA}/>}
+              </div>
+              <button className="flex items-center justify-center gap-2 h-[40px] w-fit px-5 rounded-sm text-red-500 cursor-pointer border-red-500 border-[1px]">
+                  Disconnect Wallet
+                  <LogOut width={20} height={20}/>
+              </button>
+          </div>
+
+          {showModelModal && (
+              <Modal
+                  isOpen={showModelModal}
+                  onClose={() => setShowModelModal(false)}
+                  form={<ModelForm onSelect={selectModel} disabled={modelLoading}/>}
+              />
+          )}
+          {showTemperatureModal && (
+              <Modal
+                  isOpen={showTemperatureModal}
+                  onClose={() => setShowTemperatureModal(false)}
+                  form={(
+                      <TemperatureForm
+                          setShowTemperatureModal={setShowTemperatureModal}
+                          temperature={user?.temperaure ?? 0.7}
+                          onUpdateTemperature={async (newTemp: number) => {
+                              await updateUserProfile({temperaure: newTemp});
+                          }}
+                      />
+                  )}
+              />
+          )}
+      </div>
   );
 }
